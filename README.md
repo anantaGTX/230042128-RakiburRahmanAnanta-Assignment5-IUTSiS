@@ -2,6 +2,9 @@
 
 An interactive, responsive single-page web portal designed for undergraduate students at the **Islamic University of Technology (IUT)**.
 
+🌐 **Live Website**: [https://anantagtx.github.io/iut-sis/](https://anantagtx.github.io/iut-sis/)
+📂 **GitHub Repository**: [https://github.com/anantaGTX/iut-sis](https://github.com/anantaGTX/iut-sis)
+
 ---
 
 ## 🌟 Key Features
