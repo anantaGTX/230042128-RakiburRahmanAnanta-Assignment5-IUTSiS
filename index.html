@@ -1,0 +1,4096 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IUT SIS — Student Information System | Islamic University of Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Brand Core: IUT Prestige Emerald & Architectural Terracotta */
+    --primary: #087f5b;
+    --primary-hover: #099268;
+    --primary-light: #e6fcf5;
+    --primary-glow: rgba(8, 127, 91, 0.18);
+    --brick: #c92a2a;
+    --brick-light: #fff5f5;
+    
+    /* Slate / Neutral Scale */
+    --slate-950: #070d18;
+    --slate-900: #0e1726;
+    --slate-850: #141f36;
+    --slate-800: #1c2b48;
+    --slate-700: #334155;
+    --slate-600: #475569;
+    --slate-500: #64748b;
+    --slate-400: #94a3b8;
+    --slate-300: #cbd5e1;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50:  #f8fafc;
+
+    /* Theme Surfaces (Light Mode Default) */
+    --bg-app: #f4f6fa;
+    --bg-surface: #ffffff;
+    --bg-surface-soft: #f8fafc;
+    --bg-surface-hover: #f1f5f9;
+    --sidebar-bg: #09111e;
+    --sidebar-border: rgba(255, 255, 255, 0.07);
+    --border-color: #e2e8f0;
+    --border-light: #edf2f7;
+
+    /* Text */
+    --text-main: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --text-subtle: #94a3b8;
+
+    /* Accents */
+    --blue: #2563eb;
+    --blue-light: #eff6ff;
+    --amber: #d97706;
+    --amber-light: #fffbeb;
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+
+    /* Elevation */
+    --shadow-subtle: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+    --shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+    --shadow-hover: 0 12px 28px -4px rgba(15, 23, 42, 0.09), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+    --shadow-modal: 0 24px 50px -10px rgba(15, 23, 42, 0.22);
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+    --sidebar-w: 260px;
+  }
+
+  /* ── DARK THEME ── */
+  [data-theme="dark"] {
+    --bg-app: #080e1a;
+    --bg-surface: #0f172a;
+    --bg-surface-soft: #141f36;
+    --bg-surface-hover: #1c2b48;
+    --sidebar-bg: #060b14;
+    --sidebar-border: rgba(255, 255, 255, 0.06);
+    --border-color: #1e293b;
+    --border-light: #182338;
+
+    --text-main: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-subtle: #64748b;
+
+    --primary-light: rgba(8, 127, 91, 0.2);
+    --blue-light: rgba(37, 99, 235, 0.2);
+    --amber-light: rgba(217, 119, 6, 0.2);
+    --purple-light: rgba(124, 58, 237, 0.2);
+    --red-light: rgba(220, 38, 38, 0.2);
+
+    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 6px 20px -2px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 16px 32px -4px rgba(0, 0, 0, 0.5);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-app);
+    color: var(--text-main);
+    transition: background-color 0.25s ease, color 0.25s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .brand-text, .outfit {
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── SCREENS CONTROLLER ── */
+  .screen { display: none; height: 100vh; overflow: hidden; }
+  .screen.active { display: flex; }
+
+  /* ══════════════════════════════════════════
+     LOGIN SCREEN — CINEMATIC BESPOKE REDESIGN
+     ══════════════════════════════════════════ */
+  #login {
+    flex-direction: row;
+    width: 100%;
+    height: 100vh;
+    min-height: 640px;
+    background: #080e1a;
+  }
+
+  .login-left {
+    width: min(480px, 42vw);
+    min-width: 400px;
+    flex: 0 0 min(480px, 42vw);
+    background: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 48px;
+    position: relative;
+    z-index: 10;
+    overflow-y: auto;
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.25);
+    border-right: 1px solid var(--border-color);
+  }
+
+  .login-institution-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    width: fit-content;
+    border: 1px solid rgba(8, 127, 91, 0.2);
+  }
+
+  .login-institution-badge .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: pulseGlow 2s infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .login-header-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .login-emblem {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    background: #ffffff;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(8, 127, 91, 0.18), 0 0 0 1px var(--border-color);
+    flex-shrink: 0;
+  }
+
+  .login-emblem img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .login-header-text h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.15;
+    letter-spacing: -0.4px;
+  }
+
+  .login-header-text p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .login-form {
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .input-field-wrap {
+    position: relative;
+    margin-bottom: 18px;
+  }
+
+  .input-field-wrap label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 7px;
+    letter-spacing: 0.2px;
+  }
+
+  .input-icon-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-icon-box svg.field-icon {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    stroke: var(--text-muted);
+    transition: stroke 0.2s;
+    pointer-events: none;
+  }
+
+  .input-icon-box input {
+    width: 100%;
+    padding: 13px 14px 13px 44px;
+    background: var(--bg-surface-soft);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-main);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    outline: none;
+  }
+
+  .input-icon-box input:focus {
+    background: var(--bg-surface);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-glow);
+  }
+
+  .input-icon-box input:focus + svg.field-icon,
+  .input-icon-box input:focus ~ svg.field-icon {
+    stroke: var(--primary);
+  }
+
+  .login-row-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .checkbox-label input {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--primary);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .forgot-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .forgot-link:hover { text-decoration: underline; }
+
+  .btn-auth {
+    width: 100%;
+    padding: 13px 18px;
+    background: linear-gradient(135deg, var(--primary) 0%, #0ca678 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 20px rgba(8, 127, 91, 0.28);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: inherit;
+  }
+
+  .btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(8, 127, 91, 0.35);
+    background: linear-gradient(135deg, var(--primary-hover) 0%, #08936a 100%);
+  }
+
+  .btn-auth:active {
+    transform: translateY(0);
+  }
+
+  .login-footer-info {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .login-right {
+    flex: 1 1 auto;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #070d18;
+    background-image: url('assets/iut-campus.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+  }
+
+  /* ══════════════════════════════════════════
+     APP SHELL — HIGH PRECISION DASHBOARD
+     ══════════════════════════════════════════ */
+  .app {
+    flex: 1;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-app);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    height: 100vh;
+    border-right: 1px solid var(--sidebar-border);
+    position: relative;
+    z-index: 20;
+  }
+
+  .sidebar-brand {
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  .sidebar-brand-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .brand-icon-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .brand-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+    line-height: 1.1;
+  }
+
+  .brand-subtitle {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+  }
+
+  .nav-group-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 12px 6px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-bottom: 3px;
+    position: relative;
+    user-select: none;
+  }
+
+  .nav-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    transform: translateX(2px);
+  }
+
+  .nav-link.active {
+    background: linear-gradient(90deg, rgba(8, 127, 91, 0.3) 0%, rgba(8, 127, 91, 0.15) 100%);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px rgba(8, 127, 91, 0.4);
+  }
+
+  .nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    bottom: 20%;
+    width: 3.5px;
+    background: var(--primary);
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 0 10px var(--primary);
+  }
+
+  .nav-link svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    opacity: 0.75;
+    transition: all 0.15s;
+  }
+
+  .nav-link.active svg {
+    opacity: 1;
+    stroke: #20c997;
+  }
+
+  .nav-link .badge-count {
+    margin-left: auto;
+    background: var(--brick);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 12px;
+  }
+
+  /* User Info Card in Sidebar */
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--sidebar-border);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .sidebar-user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .user-avatar-wrap {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary) 0%, #0ca678 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(8, 127, 91, 0.3);
+  }
+
+  .user-online-pip {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #20c997;
+    border: 2px solid var(--sidebar-bg);
+  }
+
+  .user-meta-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .user-meta-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-meta-role {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 1px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .btn-sidebar-logout {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .btn-sidebar-logout:hover {
+    color: #ff6b6b;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* ── MAIN CONTAINER ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: 64px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    flex-shrink: 0;
+    z-index: 15;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .topbar-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .crumb-root { color: var(--text-muted); font-weight: 500; }
+  .crumb-sep { color: var(--text-subtle); }
+  .crumb-active { color: var(--text-main); font-weight: 700; }
+
+  .term-pill {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(8, 127, 91, 0.15);
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dhaka-time-pill {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    background: var(--bg-surface-soft);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+  }
+
+  .topbar-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s;
+  }
+
+  .topbar-btn:hover {
+    background: var(--bg-surface-soft);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  .topbar-btn .notif-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background: var(--brick);
+    border-radius: 50%;
+    border: 2px solid var(--bg-surface);
+  }
+
+  /* ── CONTENT SCROLLABLE CANVAS ── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+  }
+
+  /* ══════════════════════════════════════════
+     SHARED CARDS, HERO & GRIDS
+     ══════════════════════════════════════════ */
+  .hero-banner {
+    background: linear-gradient(135deg, #091322 0%, #10213d 100%);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    color: #ffffff;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .hero-banner::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -50px;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(8, 127, 91, 0.25) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-text h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+  }
+
+  .hero-text p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+  }
+
+  .hero-stats-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .hero-stat-badge {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-stat-badge strong {
+    color: #40c057;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── METRIC STAT GRID ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card);
+    border-color: var(--primary);
+  }
+
+  .stat-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .stat-icon-wrapper {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .stat-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: var(--bg-surface-soft);
+    color: var(--text-muted);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ── PROGRESS BAR CARD ── */
+  .progress-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .progress-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .progress-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .progress-status-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .progress-track {
+    height: 8px;
+    background: var(--border-light);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, #20c997 100%);
+    border-radius: 6px;
+    transition: width 0.6s ease;
+  }
+
+  .progress-dates-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── TWO COLUMN LAYOUT ── */
+  .row-2col {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .card-box {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .card-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .card-box-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.2px;
+  }
+
+  /* ── TABLE STYLES ── */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  table.app-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table.app-table thead th {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1.5px solid var(--border-color);
+    background: var(--bg-surface-soft);
+  }
+
+  table.app-table thead th:first-child { border-radius: 8px 0 0 8px; }
+  table.app-table thead th:last-child { border-radius: 0 8px 8px 0; }
+
+  table.app-table tbody td {
+    padding: 13px 14px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+  }
+
+  table.app-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  table.app-table tbody tr {
+    transition: background 0.15s;
+  }
+
+  table.app-table tbody tr:hover {
+    background: var(--bg-surface-hover);
+  }
+
+  .badge-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+  }
+
+  /* Status Badges */
+  .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .badge-pill.green { background: var(--primary-light); color: var(--primary); }
+  .badge-pill.blue { background: var(--blue-light); color: var(--blue); }
+  .badge-pill.amber { background: var(--amber-light); color: var(--amber); }
+  .badge-pill.red { background: var(--red-light); color: var(--red); }
+  .badge-pill.gray { background: var(--bg-surface-soft); color: var(--text-muted); border: 1px solid var(--border-color); }
+
+  /* ── QUICK ACTIONS LIST ── */
+  .qa-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .qa-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+    border-radius: var(--radius-md);
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: inherit;
+    color: var(--text-main);
+    text-align: left;
+  }
+
+  .qa-card-btn:hover {
+    background: var(--bg-surface);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+
+  .qa-btn-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .qa-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .qa-text-wrap .qa-btn-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .qa-text-wrap .qa-btn-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ══════════════════════════════════════════
+     PROFILE SCREEN
+     ══════════════════════════════════════════ */
+  .profile-banner-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .profile-avatar-giant {
+    width: 96px;
+    height: 96px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--primary) 0%, #0ca678 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 38px;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 10px 24px rgba(8, 127, 91, 0.3);
+  }
+
+  .profile-banner-info h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.4px;
+    margin-bottom: 4px;
+  }
+
+  .profile-banner-info p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .profile-badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .profile-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .profile-data-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .profile-card-heading {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .profile-data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
+  }
+
+  .profile-data-row:last-child {
+    border-bottom: none;
+  }
+
+  .profile-data-lbl {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .profile-data-val {
+    color: var(--text-main);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  /* ══════════════════════════════════════════
+     RESULTS SCREEN
+     ══════════════════════════════════════════ */
+  .segmented-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-surface-soft);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    width: fit-content;
+    margin-bottom: 24px;
+  }
+
+  .seg-tab {
+    padding: 8px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .seg-tab.active {
+    background: var(--bg-surface);
+    color: var(--primary);
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .gpa-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .grade-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+  .grade-chip.A { background: var(--primary-light); color: var(--primary); }
+  .grade-chip.B { background: var(--blue-light); color: var(--blue); }
+  .grade-chip.C { background: var(--amber-light); color: var(--amber); }
+
+  /* ══════════════════════════════════════════
+     UPCOMING EXAMS & ACCORDIONS
+     ══════════════════════════════════════════ */
+  .exam-banner-bar {
+    background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-850) 100%);
+    color: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .exam-banner-items {
+    display: flex;
+    gap: 36px;
+  }
+
+  .eb-item .eb-lbl { font-size: 10px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+  .eb-item .eb-val { font-size: 13px; font-weight: 700; color: #ffffff; margin-top: 2px; }
+
+  .exam-accordion-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .exam-row-item {
+    display: grid;
+    grid-template-columns: 110px 1fr 130px 120px 90px;
+    padding: 16px 20px;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .exam-row-item:hover {
+    background: var(--bg-surface-hover);
+  }
+
+  .exam-date-box .ed-main { font-size: 15px; font-weight: 700; color: var(--text-main); }
+  .exam-date-box .ed-day { font-size: 11px; color: var(--text-muted); }
+
+  .exam-name-box .en-title { font-size: 14px; font-weight: 600; color: var(--text-main); }
+  .exam-name-box .en-sub { font-size: 11px; color: var(--text-muted); }
+
+  .syllabus-drawer {
+    background: var(--primary-light);
+    border-top: 1px dashed rgba(8, 127, 91, 0.25);
+    border-bottom: 1px solid var(--border-color);
+    padding: 18px 24px;
+    display: none;
+  }
+
+  .syllabus-drawer.open {
+    display: block;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .syllabus-drawer h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .syllabus-drawer ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .syllabus-drawer ul li::before {
+    content: '▪';
+    color: var(--primary);
+    margin-right: 8px;
+  }
+
+  /* ══════════════════════════════════════════
+     TIMETABLE MATRIX
+     ══════════════════════════════════════════ */
+  .tt-container {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: auto;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .tt-table-custom {
+    width: 100%;
+    min-width: 860px;
+    border-collapse: collapse;
+  }
+
+  .tt-table-custom th {
+    background: var(--slate-900);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 12px 8px;
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .tt-table-custom td {
+    border: 1px solid var(--border-color);
+    height: 84px;
+    vertical-align: top;
+    padding: 0;
+  }
+
+  .tt-day-th {
+    background: var(--bg-surface-soft);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-main);
+    text-align: center;
+    vertical-align: middle !important;
+    width: 80px;
+    border-right: 2px solid var(--border-color) !important;
+  }
+
+  .slot-card {
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #ffffff;
+    transition: filter 0.15s;
+  }
+
+  .slot-card:hover { filter: brightness(1.08); }
+  .slot-card .sc-course { font-size: 12px; font-weight: 700; letter-spacing: 0.2px; font-family: 'JetBrains Mono', monospace; }
+  .slot-card .sc-teacher { font-size: 10px; opacity: 0.85; margin-top: 3px; }
+
+  .bg-c1 { background: #087f5b; }
+  .bg-c2 { background: #1c7ed6; }
+  .bg-c3 { background: #7048e8; }
+  .bg-c4 { background: #0ca678; }
+  .bg-c5 { background: #d9480f; }
+  .bg-c6 { background: #c2255c; }
+  .bg-c7 { background: #2f9e44; }
+
+  /* ══════════════════════════════════════════
+     NOTICES
+     ══════════════════════════════════════════ */
+  .notices-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .n-filter-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .n-filter-btn.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 3px 10px var(--primary-glow);
+  }
+
+  .notice-item-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .notice-item-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+
+  .notice-item-card.unread {
+    border-left: 4px solid var(--primary);
+  }
+
+  .notice-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .notice-headline {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .notice-expand-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-light);
+    display: none;
+  }
+
+  .notice-expand-text.open { display: block; }
+
+  /* ══════════════════════════════════════════
+     COURSE FEEDBACK
+     ══════════════════════════════════════════ */
+  .feedback-row-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .fc-left-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .fc-indicator {
+    width: 4px;
+    height: 44px;
+    border-radius: 2px;
+  }
+
+  .fc-details-box .fc-course-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .fc-details-box .fc-course-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ══════════════════════════════════════════
+     MODALS & OVERLAYS
+     ══════════════════════════════════════════ */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(7, 13, 24, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-backdrop.open { display: flex; }
+
+  .modal-box {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 30px;
+    box-shadow: var(--shadow-modal);
+  }
+
+  .stars-rating-wrap {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0 16px;
+  }
+
+  .rating-star-btn {
+    font-size: 26px;
+    cursor: pointer;
+    color: var(--border-color);
+    transition: color 0.15s, transform 0.1s;
+    user-select: none;
+  }
+
+  .rating-star-btn:hover { transform: scale(1.15); }
+  .rating-star-btn.filled { color: #f59e0b; }
+
+  .modal-box textarea {
+    width: 100%;
+    background: var(--bg-surface-soft);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-main);
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    margin-top: 8px;
+  }
+
+  .modal-box textarea:focus {
+    border-color: var(--primary);
+    background: var(--bg-surface);
+  }
+
+  /* ── ADMIT CARD MODAL ── */
+  .admit-card-box {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-modal);
+  }
+
+  .admit-top-seal {
+    background: linear-gradient(135deg, var(--slate-950) 0%, var(--slate-900) 100%);
+    color: #ffffff;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 2px solid var(--primary);
+  }
+
+  .admit-body-pad {
+    padding: 26px;
+  }
+
+  /* ── TOAST ALERT ── */
+  .toast-alert {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--slate-900);
+    color: #ffffff;
+    padding: 14px 22px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--shadow-hover);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 999;
+    transform: translateY(120px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-left: 4px solid var(--primary);
+    pointer-events: none;
+  }
+
+  .toast-alert.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ══════════════════════════════════════════
+     FEES & PAYMENTS SECTION
+     ══════════════════════════════════════════ */
+  .fees-viewonly-banner {
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--amber);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .fees-viewonly-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--amber-light);
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .fees-viewonly-text {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
+
+  .fees-viewonly-title {
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 2px;
+  }
+
+  .pending-balance-box {
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.08) 0%, rgba(217, 119, 6, 0.02) 100%);
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    border-radius: var(--radius-lg);
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .pending-balance-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .pending-balance-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--amber-light);
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .pending-balance-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .pending-balance-sub {
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  .fee-breakdown-section {
+    display: none;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+    margin-bottom: 24px;
+    animation: feesFadeIn 0.25s ease;
+  }
+
+  .fee-breakdown-section.show {
+    display: block;
+  }
+
+  @keyframes feesFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .bank-channel-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+    margin-top: 24px;
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .bank-channel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .bank-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .bank-abbr {
+    background: #1e3a8a;
+    color: #ffffff;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  .bank-channel-desc {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+
+  .bank-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    background: var(--bg-surface-soft);
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+  }
+
+  .bank-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .bank-detail-item .lbl {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .bank-detail-item .val {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .topbar-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-surface-soft);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+  }
+
+  .topbar-search-wrap:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-light);
+  }
+
+  .topbar-search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--text-main);
+    width: 220px;
+  }
+
+  .topbar-search-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  /* ── RESPONSIVE ADAPTATIONS ── */
+  @media (max-width: 1024px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .row-2col { grid-template-columns: 1fr; }
+    .login-left { width: 440px; min-width: 440px; }
+  }
+
+  @media (max-width: 768px) {
+    #login { flex-direction: column; }
+    .login-left { width: 100%; min-width: 0; height: 100vh; padding: 36px 24px; }
+    .login-right { display: none; }
+    .sidebar { width: 72px; }
+    .brand-info, .nav-link span, .nav-group-label, .sidebar-footer .user-meta-text { display: none; }
+    .nav-link { justify-content: center; padding: 12px; }
+    .content { padding: 20px; }
+    .topbar { padding: 0 18px; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .profile-grid-2 { grid-template-columns: 1fr; }
+    .gpa-cards-grid { grid-template-columns: 1fr; }
+    .topbar-search-wrap { display: none; }
+    .pending-balance-box { flex-direction: column; align-items: flex-start; }
+    .bank-details-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── PRINT VIEW ── */
+  @media print {
+    body * { visibility: hidden; }
+    #admit-overlay, #admit-overlay *, #challan-overlay, #challan-overlay * { visibility: visible; }
+    #admit-overlay, #challan-overlay {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      display: block !important;
+      padding: 0;
+      margin: 0;
+    }
+    .admit-card-box {
+      border: 1.5px solid #0f172a;
+      box-shadow: none;
+      width: 100%;
+    }
+    .admit-actions-row { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 1: MODERN LOGIN PORTAL              -->
+<!-- ══════════════════════════════════════════ -->
+<div id="login" class="screen active">
+  <div class="login-left">
+    <div class="login-institution-badge">
+      <div class="pulse-dot"></div>
+      OIC Subsidiary Organ • Est. 1981
+    </div>
+
+    <div class="login-header-group">
+      <div class="login-emblem">
+        <img src="assets/pic.png" alt="IUT Emblem">
+      </div>
+      <div class="login-header-text">
+        <h1>Student Portal</h1>
+        <p>Islamic University of Technology (IUT)</p>
+      </div>
+    </div>
+
+    <form class="login-form" id="login-form" onsubmit="handleLogin(event)">
+      <div class="input-field-wrap">
+        <label for="login-email">Student Academic Email</label>
+        <div class="input-icon-box">
+          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input id="login-email" type="email" value="raks28@iut-dhaka.edu" placeholder="student_id@iut-dhaka.edu" required />
+        </div>
+      </div>
+
+      <div class="input-field-wrap">
+        <label for="login-pass">Portal Password</label>
+        <div class="input-icon-box">
+          <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input id="login-pass" type="password" value="123456" placeholder="••••••••" required />
+        </div>
+      </div>
+
+      <div class="login-row-options">
+        <label class="checkbox-label">
+          <input type="checkbox" checked /> Remember session
+        </label>
+        <a href="javascript:void(0)" class="forgot-link" onclick="forgotPassword()">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-auth">
+        <span>Sign In to SIS</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </form>
+
+    <div class="login-footer-info">
+      <span>ICT Technical Helpdesk</span>
+      <a href="mailto:ict.sis@iut-dhaka.edu" style="color:var(--text-muted);text-decoration:none">ict.sis@iut-dhaka.edu</a>
+    </div>
+  </div>
+
+  <div class="login-right"></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 2: DASHBOARD                        -->
+<!-- ══════════════════════════════════════════ -->
+<div id="dashboard" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-dashboard"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Dashboard</span>
+          </div>
+          <div class="term-pill">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--primary)"></span>
+            Summer 2024–25
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="dhaka-time-pill" id="live-time-display">20:38 Dhaka (BST)</div>
+          <button class="topbar-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <svg id="theme-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <button class="topbar-btn" onclick="go('notices')" title="Notifications">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <div class="notif-dot"></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+          <div class="hero-text">
+            <h2>Welcome back, Rakibur Rahman 👋</h2>
+            <p>BSc in Software Engineering • Department of Computer Science & Engineering • 4th Semester</p>
+            <div class="hero-stats-row">
+              <div class="hero-stat-badge"><span>Current CGPA:</span> <strong>3.86</strong></div>
+              <div class="hero-stat-badge"><span>Semester GPA:</span> <strong>3.92</strong></div>
+              <div class="hero-stat-badge"><span>Completed Credits:</span> <strong>76.75</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-label">Academic Standing</span>
+              <span class="stat-tag">Level 4</span>
+            </div>
+            <div class="stat-value" style="color:var(--primary)">4th Sem</div>
+            <div class="stat-sub">BSc SWE • Batch 2023</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-label">Cumulative GPA</span>
+              <span class="stat-tag">Top 5%</span>
+            </div>
+            <div class="stat-value" style="color:var(--primary)">3.86</div>
+            <div class="stat-sub">Scale 4.00 • 76.75 Credits</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-label">Academic Year</span>
+              <span class="stat-tag">Active</span>
+            </div>
+            <div class="stat-value">2024–25</div>
+            <div class="stat-sub">Summer Semester</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-label">Student Identification</span>
+              <span class="stat-tag">Verified</span>
+            </div>
+            <div class="stat-value mono" style="font-size:22px">230042128</div>
+            <div class="stat-sub mono">raks28@iut-dhaka.edu</div>
+          </div>
+        </div>
+
+        <!-- Semester Progress -->
+        <div class="progress-card">
+          <div class="progress-top-row">
+            <span class="progress-title">Summer Semester Progress Overview</span>
+            <span class="progress-status-badge">Final Examination Period Ongoing</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 100%"></div>
+          </div>
+          <div class="progress-dates-row">
+            <span>Classes Commenced: 20 April 2026</span>
+            <span>Final Exams: 28 Aug – 10 Sep 2026</span>
+          </div>
+        </div>
+
+        <div class="row-2col">
+          <!-- Today's Schedule -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <h3 class="card-box-title">Today's Class Schedule — Monday</h3>
+              <span class="badge-pill blue">3 Lectures</span>
+            </div>
+            <div class="table-responsive">
+              <table class="app-table">
+                <thead>
+                  <tr><th>Time Slot</th><th>Course Details</th><th>Instructor</th><th>Type</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="badge-code">9:15 – 10:30</span></td>
+                    <td><strong>SWE 4401</strong> — Software Requirements Specification</td>
+                    <td>Farzana Tabassum</td>
+                    <td><span class="badge-pill blue">Lecture</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge-code">10:30 – 11:45</span></td>
+                    <td><strong>HUM 4441</strong> — Engineering Ethics</td>
+                    <td>Yousuf Ibne Kamal Niloy</td>
+                    <td><span class="badge-pill green">Lecture</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge-code">11:45 – 13:00</span></td>
+                    <td><strong>CSE 4403</strong> — Algorithm Design & Analysis</td>
+                    <td>Anika Farzana</td>
+                    <td><span class="badge-pill blue">Lecture</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="card-box">
+            <div class="card-box-header">
+              <h3 class="card-box-title">Quick Academic Actions</h3>
+            </div>
+            <div class="qa-card-list">
+              <button class="qa-card-btn" onclick="go('exams')">
+                <div class="qa-btn-left">
+                  <div class="qa-icon-box" style="background:var(--primary-light);color:var(--primary)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
+                  </div>
+                  <div class="qa-text-wrap">
+                    <div class="qa-btn-title">Exam Schedule & Syllabus</div>
+                    <div class="qa-btn-sub">View dates, times & admit card</div>
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+
+              <button class="qa-card-btn" onclick="go('results')">
+                <div class="qa-btn-left">
+                  <div class="qa-icon-box" style="background:var(--blue-light);color:var(--blue)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  </div>
+                  <div class="qa-text-wrap">
+                    <div class="qa-btn-title">Semester Grade Sheets</div>
+                    <div class="qa-btn-sub">GPA breakdown & passed courses</div>
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+
+              <button class="qa-card-btn" onclick="go('timetable')">
+                <div class="qa-btn-left">
+                  <div class="qa-icon-box" style="background:var(--purple-light);color:var(--purple)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </div>
+                  <div class="qa-text-wrap">
+                    <div class="qa-btn-title">Weekly Routine & Slots</div>
+                    <div class="qa-btn-sub">Full timetable & prayer breaks</div>
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+
+              <button class="qa-card-btn" onclick="go('feedback')">
+                <div class="qa-btn-left">
+                  <div class="qa-icon-box" style="background:var(--amber-light);color:var(--amber)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <div class="qa-text-wrap">
+                    <div class="qa-btn-title">Faculty Course Feedback</div>
+                    <div class="qa-btn-sub">Anonymous quality evaluations</div>
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+
+              <button class="qa-card-btn" onclick="go('fees')">
+                <div class="qa-btn-left">
+                  <div class="qa-icon-box" style="background:var(--primary-light);color:var(--primary)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  </div>
+                  <div class="qa-text-wrap">
+                    <div class="qa-btn-title">Fees & Payments</div>
+                    <div class="qa-btn-sub">2nd Year Balance: $1,500 (৳1,80,000) • AB Bank</div>
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 3: PROFILE                          -->
+<!-- ══════════════════════════════════════════ -->
+<div id="profile" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-profile"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Student Profile</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Giant Profile Card -->
+        <div class="profile-banner-card">
+          <div class="profile-avatar-giant">R</div>
+          <div class="profile-banner-info">
+            <h2>Rakibur Rahman Ananta</h2>
+            <p>Undergraduate Scholar • BSc in Software Engineering • Department of CSE</p>
+            <div class="profile-badge-row">
+              <span class="badge-pill green">4th Semester (Senior Sophomore)</span>
+              <span class="badge-pill blue">Batch of 2023</span>
+              <span class="badge-pill gray">Academic Year 2024–2025</span>
+              <span class="badge-pill gray mono">Student ID: 230042128</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-grid-2">
+          <!-- Personal Info -->
+          <div class="profile-data-card">
+            <div class="profile-card-heading">
+              <span>Personal Information</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Full Name</span><span class="profile-data-val">Rakibur Rahman Ananta</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Father's Name</span><span class="profile-data-val">Md. Mahbubur Rahman</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Mother's Name</span><span class="profile-data-val">Nasreen Akhter</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Guardian's Name</span><span class="profile-data-val">Md. Mahbubur Rahman</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Date of Birth</span><span class="profile-data-val">15 March 2005</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Gender</span><span class="profile-data-val">Male</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Blood Group</span><span class="profile-data-val mono">B+ (Positive)</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Religion</span><span class="profile-data-val">Islam</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Nationality</span><span class="profile-data-val">Bangladeshi</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Emergency Phone</span><span class="profile-data-val mono">+880 1XXX-XXXXXX</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Academic Email</span><span class="profile-data-val mono">raks28@iut-dhaka.edu</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Hall / Hostel</span><span class="profile-data-val">Non-Resident</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Resident Status</span><span class="profile-data-val badge-pill red" style="font-size:10px">No (Day Scholar)</span></div>
+          </div>
+
+          <!-- Academic Info -->
+          <div class="profile-data-card">
+            <div class="profile-card-heading">
+              <span>Academic Records</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Student ID</span><span class="profile-data-val mono" style="color:var(--primary);font-size:14px">230042128</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Program of Study</span><span class="profile-data-val">BSc in Software Engineering</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Host Department</span><span class="profile-data-val">Computer Science & Engineering</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Admission Batch</span><span class="profile-data-val">2023</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Current Level</span><span class="profile-data-val">4th Semester</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Active Session</span><span class="profile-data-val">Summer 2024–2025</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Cumulative GPA</span><span class="profile-data-val" style="color:var(--primary);font-size:16px;font-weight:800">3.86 / 4.00</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Faculty Advisor</span><span class="profile-data-val">Prof. Dr. Raihan Kamal</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Total Credits Earned</span><span class="profile-data-val mono">76.75 Credit Hours</span></div>
+            <div class="profile-data-row"><span class="profile-data-lbl">Enrollment Status</span><span class="profile-data-val"><span class="badge-pill green">Active & In Good Standing</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 4: RESULTS                          -->
+<!-- ══════════════════════════════════════════ -->
+<div id="results" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-results"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Academic Results</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="badge-pill green" id="results-top-cgpa">CGPA: 3.86</span>
+          <button class="topbar-btn" onclick="toggleTheme()" title="Toggle Theme">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Segmented Tab Switcher -->
+        <div class="segmented-tabs">
+          <div class="seg-tab" onclick="switchTab(1)">Semester 1</div>
+          <div class="seg-tab" onclick="switchTab(2)">Semester 2</div>
+          <div class="seg-tab" onclick="switchTab(3)">Semester 3</div>
+          <div class="seg-tab active" onclick="switchTab(4)">Semester 4 (Current)</div>
+        </div>
+
+        <!-- GPA Metric Cards -->
+        <div class="gpa-cards-grid">
+          <div class="stat-card">
+            <span class="stat-label">Semester GPA</span>
+            <div class="stat-value" id="res-sem-gpa" style="color:var(--primary)">3.92</div>
+            <div class="stat-sub" id="res-sem-sub">Summer Semester 2024–25</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Cumulative GPA</span>
+            <div class="stat-value" id="res-cum-gpa" style="color:var(--primary)">3.86</div>
+            <div class="stat-sub">Aggregated across all completed semesters</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Credits Completed</span>
+            <div class="stat-value mono" id="res-credits" style="color:var(--blue)">18.0</div>
+            <div class="stat-sub">All course requirements satisfied</div>
+          </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="card-box" style="padding:0;overflow:hidden">
+          <div style="padding:18px 24px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center">
+            <h3 class="card-box-title">Semester Course Performance</h3>
+            <span class="badge-pill green">All Courses Cleared</span>
+          </div>
+          <div class="table-responsive">
+            <table class="app-table">
+              <thead>
+                <tr>
+                  <th>Course Code</th>
+                  <th>Course Title</th>
+                  <th>Credits</th>
+                  <th>Grade</th>
+                  <th>Grade Points</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="results-table-body">
+                <!-- Injected via JavaScript switchTab -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 5: UPCOMING EXAMS                   -->
+<!-- ══════════════════════════════════════════ -->
+<div id="exams" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-exams"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Upcoming Examinations</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn-auth" style="padding:8px 16px;font-size:12px" onclick="openAdmit()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Admit Card
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="exam-banner-bar">
+          <div class="exam-banner-items">
+            <div class="eb-item"><div class="eb-lbl">Examination Type</div><div class="eb-val">Semester Final Examination</div></div>
+            <div class="eb-item"><div class="eb-lbl">Academic Semester</div><div class="eb-val">Summer 2024–2025</div></div>
+            <div class="eb-item"><div class="eb-lbl">Official Session Slot</div><div class="eb-val">2:30 PM – 4:30 PM (BST)</div></div>
+            <div class="eb-item"><div class="eb-lbl">Duration</div><div class="eb-val">2 Hours per course</div></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;font-size:12px;color:var(--text-muted)">
+          Click any examination row to expand its detailed syllabus checklist and examination coverage.
+        </div>
+
+        <div class="exam-accordion-card">
+          <!-- Row 1 -->
+          <div>
+            <div class="exam-row-item" onclick="toggleSyllabus('s1')">
+              <div class="exam-date-box"><div class="ed-main">28 Aug</div><div class="ed-day">Friday</div></div>
+              <div class="exam-name-box"><div class="en-title">Data Communication & Networking</div><div class="en-sub">DCN • Theory Examination</div></div>
+              <div class="mono" style="font-size:13px;font-weight:600">2:30 – 4:30 PM</div>
+              <div><span class="badge-code" style="color:var(--blue)">CSE 4411</span></div>
+              <div class="syllabus-indicator" style="font-size:12px;color:var(--primary);font-weight:700">▸ View Syllabus</div>
+            </div>
+            <div id="s1" class="syllabus-drawer">
+              <h4>CSE 4411 Syllabus Coverage</h4>
+              <ul>
+                <li>Chapter 4: IP Datagram (pg 49) to pg 108 & Digital Transmission Models</li>
+                <li>Chapter 5: Medium Access Control & Routing Algorithms (pg 1–76)</li>
+                <li>Chapter 6: Full Transport Layer, TCP/UDP sockets, flow & congestion control</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div>
+            <div class="exam-row-item" onclick="toggleSyllabus('s2')">
+              <div class="exam-date-box"><div class="ed-main">31 Aug</div><div class="ed-day">Monday</div></div>
+              <div class="exam-name-box"><div class="en-title">Algorithm Design & Analysis</div><div class="en-sub">Algorithm • Theory Examination</div></div>
+              <div class="mono" style="font-size:13px;font-weight:600">2:30 – 4:30 PM</div>
+              <div><span class="badge-code" style="color:var(--primary)">CSE 4403</span></div>
+              <div class="syllabus-indicator" style="font-size:12px;color:var(--primary);font-weight:700">▸ View Syllabus</div>
+            </div>
+            <div id="s2" class="syllabus-drawer">
+              <h4>CSE 4403 Syllabus Coverage</h4>
+              <ul>
+                <li>Dynamic Programming, Greedy Strategies, Graph Algorithms (Dijkstra, Bellman-Ford, Floyd-Warshall)</li>
+                <li>Network Flow (Ford-Fulkerson), NP-Completeness, Approximation Algorithms (Lectures 14–22)</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div>
+            <div class="exam-row-item" onclick="toggleSyllabus('s3')">
+              <div class="exam-date-box"><div class="ed-main">02 Sep</div><div class="ed-day">Wednesday</div></div>
+              <div class="exam-name-box"><div class="en-title">Database Management Systems II</div><div class="en-sub">DBMS • Theory Examination</div></div>
+              <div class="mono" style="font-size:13px;font-weight:600">2:30 – 4:30 PM</div>
+              <div><span class="badge-code" style="color:var(--amber)">CSE 4409</span></div>
+              <div class="syllabus-indicator" style="font-size:12px;color:var(--primary);font-weight:700">▸ View Syllabus</div>
+            </div>
+            <div id="s3" class="syllabus-drawer">
+              <h4>CSE 4409 Syllabus Coverage</h4>
+              <ul>
+                <li>PL/SQL Cursors, Exception Handling, Stored Procedures and Triggers</li>
+                <li>NoSQL Architecture, Document Stores (MongoDB), Graph Databases (Neo4j)</li>
+                <li>Data Warehousing, OLAP vs OLTP, Star & Snowflake Schema Architectures</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Row 4 -->
+          <div>
+            <div class="exam-row-item" onclick="toggleSyllabus('s4')">
+              <div class="exam-date-box"><div class="ed-main">04 Sep</div><div class="ed-day">Friday</div></div>
+              <div class="exam-name-box"><div class="en-title">Engineering Ethics</div><div class="en-sub">Ethics • Theory Examination</div></div>
+              <div class="mono" style="font-size:13px;font-weight:600">2:30 – 4:30 PM</div>
+              <div><span class="badge-code">HUM 4441</span></div>
+              <div class="syllabus-indicator" style="font-size:12px;color:var(--primary);font-weight:700">▸ View Syllabus</div>
+            </div>
+            <div id="s4" class="syllabus-drawer">
+              <h4>HUM 4441 Syllabus Coverage</h4>
+              <ul>
+                <li>Professional Engineering Codes of Ethics (IEEE & ACM)</li>
+                <li>Whistleblowing, Intellectual Property Rights (IPR), Software Patents</li>
+                <li>Ethical Dilemmas in Artificial Intelligence and Autonomous Systems (Lectures 8–12)</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Row 5 -->
+          <div>
+            <div class="exam-row-item" onclick="toggleSyllabus('s5')">
+              <div class="exam-date-box"><div class="ed-main">07 Sep</div><div class="ed-day">Monday</div></div>
+              <div class="exam-name-box"><div class="en-title">Probability & Statistics</div><div class="en-sub">Mathematics • Theory Examination</div></div>
+              <div class="mono" style="font-size:13px;font-weight:600">2:30 – 4:30 PM</div>
+              <div><span class="badge-code" style="color:var(--blue)">MATH 4441</span></div>
+              <div class="syllabus-indicator" style="font-size:12px;color:var(--primary);font-weight:700">▸ View Syllabus</div>
+            </div>
+            <div id="s5" class="syllabus-drawer">
+              <h4>MATH 4441 Syllabus Coverage</h4>
+              <ul>
+                <li>Discrete & Continuous Distributions (Poisson, Bernoulli, Binomial, Normal, Uniform)</li>
+                <li>Joint Probability Distributions, Covariance, Correlation, Chebyshev's Inequality</li>
+                <li>Hypothesis Testing, Maximum Likelihood Estimation (MLE), Central Limit Theorem</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Row 6 -->
+          <div>
+            <div class="exam-row-item" onclick="toggleSyllabus('s6')">
+              <div class="exam-date-box"><div class="ed-main">10 Sep</div><div class="ed-day">Thursday</div></div>
+              <div class="exam-name-box"><div class="en-title">Software Requirements Specification</div><div class="en-sub">SWE Core • Theory Examination</div></div>
+              <div class="mono" style="font-size:13px;font-weight:600">2:30 – 4:30 PM</div>
+              <div><span class="badge-code" style="color:var(--primary)">SWE 4401</span></div>
+              <div class="syllabus-indicator" style="font-size:12px;color:var(--primary);font-weight:700">▸ View Syllabus</div>
+            </div>
+            <div id="s6" class="syllabus-drawer">
+              <h4>SWE 4401 Syllabus Coverage</h4>
+              <ul>
+                <li>Agile & Scrum Methodologies, Sprint Planning, Definition of Done (DoD) & Ready (DoR)</li>
+                <li>MoSCoW Prioritization, User Story Estimation, Story Points, Planning Poker</li>
+                <li>Non-Functional Requirements Modeling (ISO/IEC 25010), Traceability Matrix</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 6: COURSE FEEDBACK                  -->
+<!-- ══════════════════════════════════════════ -->
+<div id="feedback" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-feedback"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Course Quality Feedback</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="term-pill">Summer 2024–25</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="hero-banner" style="padding:22px 28px;margin-bottom:20px;background:linear-gradient(135deg,#132238 0%,#091322 100%)">
+          <div class="hero-text">
+            <h2>Anonymous Quality Evaluations</h2>
+            <p>Your constructive evaluations directly guide academic quality and faculty reviews. Responses are completely anonymous.</p>
+          </div>
+        </div>
+
+        <div id="feedback-cards-container">
+          <div class="feedback-row-card" data-course-code="CSE 4403">
+            <div class="fc-left-group">
+              <div class="fc-indicator bg-c1"></div>
+              <div class="fc-details-box">
+                <div class="fc-course-title">Algorithm Design & Analysis</div>
+                <div class="fc-course-meta">CSE 4403 • Instructor: Anika Farzana</div>
+              </div>
+            </div>
+            <div class="fc-actions-box">
+              <button class="btn-auth" style="padding:8px 18px;font-size:12px" onclick="openFeedback('CSE 4403','Algorithm Design & Analysis','Anika Farzana')">
+                Submit Evaluation
+              </button>
+            </div>
+          </div>
+
+          <div class="feedback-row-card" data-course-code="CSE 4409">
+            <div class="fc-left-group">
+              <div class="fc-indicator bg-c2"></div>
+              <div class="fc-details-box">
+                <div class="fc-course-title">Database Management Systems II</div>
+                <div class="fc-course-meta">CSE 4409 • Instructor: Prof. Dr. Raihan Kamal</div>
+              </div>
+            </div>
+            <div class="fc-actions-box">
+              <span class="badge-pill green">Submitted</span>
+            </div>
+          </div>
+
+          <div class="feedback-row-card" data-course-code="CSE 4411">
+            <div class="fc-left-group">
+              <div class="fc-indicator bg-c3"></div>
+              <div class="fc-details-box">
+                <div class="fc-course-title">Data Communication & Networking</div>
+                <div class="fc-course-meta">CSE 4411 • Instructor: Faisal Hussain</div>
+              </div>
+            </div>
+            <div class="fc-actions-box">
+              <button class="btn-auth" style="padding:8px 18px;font-size:12px" onclick="openFeedback('CSE 4411','Data Communication & Networking','Faisal Hussain')">
+                Submit Evaluation
+              </button>
+            </div>
+          </div>
+
+          <div class="feedback-row-card" data-course-code="CSE 4412">
+            <div class="fc-left-group">
+              <div class="fc-indicator bg-c4"></div>
+              <div class="fc-details-box">
+                <div class="fc-course-title">Software Architecture & Design</div>
+                <div class="fc-course-meta">CSE 4412 • Instructors: Faisal Hussain / Md. Tanvir Hossain Saikat</div>
+              </div>
+            </div>
+            <div class="fc-actions-box">
+              <button class="btn-auth" style="padding:8px 18px;font-size:12px" onclick="openFeedback('CSE 4412','Software Architecture & Design','Faisal Hussain')">
+                Submit Evaluation
+              </button>
+            </div>
+          </div>
+
+          <div class="feedback-row-card" data-course-code="HUM 4441">
+            <div class="fc-left-group">
+              <div class="fc-indicator bg-c5"></div>
+              <div class="fc-details-box">
+                <div class="fc-course-title">Engineering Ethics</div>
+                <div class="fc-course-meta">HUM 4441 • Instructor: Yousuf Ibne Kamal Niloy</div>
+              </div>
+            </div>
+            <div class="fc-actions-box">
+              <span class="badge-pill green">Submitted</span>
+            </div>
+          </div>
+
+          <div class="feedback-row-card" data-course-code="MATH 4441">
+            <div class="fc-left-group">
+              <div class="fc-indicator bg-c6"></div>
+              <div class="fc-details-box">
+                <div class="fc-course-title">Probability & Statistics</div>
+                <div class="fc-course-meta">MATH 4441 • Instructor: Dr. Muntasir Alam (PT)</div>
+              </div>
+            </div>
+            <div class="fc-actions-box">
+              <button class="btn-auth" style="padding:8px 18px;font-size:12px" onclick="openFeedback('MATH 4441','Probability & Statistics','Dr. Muntasir Alam')">
+                Submit Evaluation
+              </button>
+            </div>
+          </div>
+
+          <div class="feedback-row-card" data-course-code="SWE 4401">
+            <div class="fc-left-group">
+              <div class="fc-indicator bg-c7"></div>
+              <div class="fc-details-box">
+                <div class="fc-course-title">Software Requirements Specification</div>
+                <div class="fc-course-meta">SWE 4401 • Instructor: Farzana Tabassum</div>
+              </div>
+            </div>
+            <div class="fc-actions-box">
+              <button class="btn-auth" style="padding:8px 18px;font-size:12px" onclick="openFeedback('SWE 4401','Software Requirements Specification','Farzana Tabassum')">
+                Submit Evaluation
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 7: TIMETABLE                        -->
+<!-- ══════════════════════════════════════════ -->
+<div id="timetable" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-timetable"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Weekly Schedule Matrix</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="badge-pill blue">BSc SWE 4th Sem</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:14px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;font-size:13px">
+          <div><strong style="color:var(--text-main)">Summer Semester 2024–25 Routine</strong> • Department of CSE</div>
+          <div class="mono" style="font-size:12px;color:var(--text-muted)">Prayer & Lunch Recess: 13:00 – 14:30</div>
+        </div>
+
+        <div class="tt-container">
+          <table class="tt-table-custom">
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Slot 1<br><small style="font-weight:400;opacity:0.7">8:00–9:15</small></th>
+                <th>Slot 2<br><small style="font-weight:400;opacity:0.7">9:15–10:30</small></th>
+                <th>Slot 3<br><small style="font-weight:400;opacity:0.7">10:30–11:45</small></th>
+                <th>Slot 4<br><small style="font-weight:400;opacity:0.7">11:45–13:00</small></th>
+                <th style="background:#060c16;color:rgba(255,255,255,0.4);font-size:10px">13:00<br>14:30</th>
+                <th>Slot 5<br><small style="font-weight:400;opacity:0.7">14:30–15:45</small></th>
+                <th>Slot 6<br><small style="font-weight:400;opacity:0.7">15:45–17:00</small></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tt-day-th">Mon</td>
+                <td style="background:var(--bg-surface-soft)"></td>
+                <td><div class="slot-card bg-c1"><div class="sc-course">SWE 4401</div><div class="sc-teacher">Farzana Tabassum</div></div></td>
+                <td><div class="slot-card bg-c3"><div class="sc-course">HUM 4441</div><div class="sc-teacher">YKN</div></div></td>
+                <td><div class="slot-card bg-c5"><div class="sc-course">CSE 4403</div><div class="sc-teacher">Anika Farzana</div></div></td>
+                <td rowspan="5" style="background:var(--bg-surface-soft);text-align:center;color:var(--text-muted);font-size:11px;font-weight:600;padding:8px">
+                  <div style="writing-mode:vertical-rl;text-orientation:mixed;height:100%;display:flex;align-items:center;justify-content:center;margin:0 auto">
+                    Lunch & Prayer Break
+                  </div>
+                </td>
+                <td style="background:var(--bg-surface-soft)"></td>
+                <td style="background:var(--bg-surface-soft)"></td>
+              </tr>
+              <tr>
+                <td class="tt-day-th">Tue</td>
+                <td colspan="2"><div class="slot-card bg-c4" style="height:100%"><div class="sc-course">CSE 4412 (A) Lab</div><div class="sc-teacher">FH / THS</div></div></td>
+                <td colspan="2"><div class="slot-card bg-c4" style="height:100%"><div class="sc-course">CSE 4412 (B) Lab</div><div class="sc-teacher">FH / THS</div></div></td>
+                <td><div class="slot-card bg-c2"><div class="sc-course">CSE 4404 (A)</div><div class="sc-teacher">AFZ / SBI</div></div></td>
+                <td><div class="slot-card bg-c1"><div class="sc-course">SWE 4402 (B)</div><div class="sc-teacher">FT / SAH</div></div></td>
+              </tr>
+              <tr>
+                <td class="tt-day-th">Wed</td>
+                <td><div class="slot-card bg-c5"><div class="sc-course">CSE 4403</div><div class="sc-teacher">AFZ</div></div></td>
+                <td><div class="slot-card bg-c4"><div class="sc-course">CSE 4411</div><div class="sc-teacher">FH</div></div></td>
+                <td colspan="2"><div class="slot-card bg-c6" style="height:100%"><div class="sc-course">CSE 4409 (100 min)</div><div class="sc-teacher">Prof. Raihan Kamal</div></div></td>
+                <td style="background:var(--bg-surface-soft)"></td>
+                <td style="background:var(--bg-surface-soft)"></td>
+              </tr>
+              <tr>
+                <td class="tt-day-th">Thu</td>
+                <td><div class="slot-card bg-c3"><div class="sc-course">HUM 4441</div><div class="sc-teacher">YKN</div></div></td>
+                <td><div class="slot-card bg-c7"><div class="sc-course">MATH 4441</div><div class="sc-teacher">MUA (PT)</div></div></td>
+                <td><div class="slot-card bg-c1"><div class="sc-course">SWE 4401</div><div class="sc-teacher">FT</div></div></td>
+                <td><div class="slot-card bg-c4"><div class="sc-course">CSE 4411</div><div class="sc-teacher">FH</div></div></td>
+                <td><div class="slot-card bg-c2"><div class="sc-course">CSE 4404 (B)</div><div class="sc-teacher">AFZ / TAS</div></div></td>
+                <td><div class="slot-card bg-c5"><div class="sc-course">CSE 4410 (A)</div><div class="sc-teacher">SK (PT) / X1</div></div></td>
+              </tr>
+              <tr>
+                <td class="tt-day-th">Fri</td>
+                <td style="background:var(--bg-surface-soft)"></td>
+                <td><div class="slot-card bg-c7"><div class="sc-course">MATH 4441</div><div class="sc-teacher">MUA (PT)</div></div></td>
+                <td><div class="slot-card bg-c1"><div class="sc-course">SWE 4402 (A)</div><div class="sc-teacher">FT / SAH</div></div></td>
+                <td><div class="slot-card bg-c5"><div class="sc-course">CSE 4410 (B)</div><div class="sc-teacher">SK (PT) / X1</div></div></td>
+                <td style="background:var(--bg-surface-soft)"></td>
+                <td style="background:var(--bg-surface-soft)"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 8: NOTICES & CIRCULARS              -->
+<!-- ══════════════════════════════════════════ -->
+<div id="notices" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-notices"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Official Circulars</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="badge-pill red" id="notices-unread-badge">4 Unread</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="notices-filter-bar">
+          <button class="n-filter-btn active" onclick="filterNotices('all', this)">All Categories</button>
+          <button class="n-filter-btn" onclick="filterNotices('exam', this)">Examinations</button>
+          <button class="n-filter-btn" onclick="filterNotices('academic', this)">Academic Affairs</button>
+          <button class="n-filter-btn" onclick="filterNotices('general', this)">General Announcements</button>
+        </div>
+
+        <div class="notice-item-card unread" data-category="academic" onclick="toggleNotice(this)">
+          <div class="notice-header-row">
+            <div>
+              <span class="badge-pill amber" style="margin-bottom:8px">Finance Office</span>
+              <div class="notice-headline">2nd Year Tuition & Dues Payment Notice — AY 2024–2025 (Due in 6 days)</div>
+            </div>
+            <div class="mono" style="font-size:12px;color:var(--text-muted)">17 Sep 2026</div>
+          </div>
+          <div class="notice-expand-text">
+            All 2nd Year undergraduate scholars (Batch 2023) are advised that the remaining 2nd Year tuition installment ($1,500 / ৳1,80,000) must be deposited prior to <strong>September 24, 2026</strong>. Payments are accepted exclusively via <strong>AB Bank Ltd</strong> (IUT Board Bazar Branch / designated online collection channels). Please preserve the bank deposit slip (Student Copy) for automated registration clearance.
+            <div style="margin-top:12px">
+              <button class="btn-auth" style="padding:6px 14px;font-size:11.5px;width:auto" onclick="event.stopPropagation(); go('fees');">View Billing & Payment History →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="notice-item-card unread" data-category="exam" onclick="toggleNotice(this)">
+          <div class="notice-header-row">
+            <div>
+              <span class="badge-pill red" style="margin-bottom:8px">Examination</span>
+              <div class="notice-headline">Final Examination Schedule & Protocols — Summer 2024–25</div>
+            </div>
+            <div class="mono" style="font-size:12px;color:var(--text-muted)">14 Sep 2026</div>
+          </div>
+          <div class="notice-expand-text">Final examinations for Summer Semester 2024-25 are officially underway from 28 August to 10 September 2026. All sessions are conducted from 2:30 PM to 4:30 PM. All students must present physical admit cards at the hall entry. No electronic devices or programmable calculators are permitted.</div>
+        </div>
+
+        <div class="notice-item-card unread" data-category="academic" onclick="toggleNotice(this)">
+          <div class="notice-header-row">
+            <div>
+              <span class="badge-pill amber" style="margin-bottom:8px">Academic Affairs</span>
+              <div class="notice-headline">Industrial Training 4-Week Placement Confirmation</div>
+            </div>
+            <div class="mono" style="font-size:12px;color:var(--text-muted)">10 Sep 2026</div>
+          </div>
+          <div class="notice-expand-text">Mandatory 4-week industrial training for eligible SWE undergraduates will commence on Monday, 14 September 2026. Students must complete enterprise placement onboarding forms at the department registry before 12 September 2026.</div>
+        </div>
+
+        <div class="notice-item-card unread" data-category="general" onclick="toggleNotice(this)">
+          <div class="notice-header-row">
+            <div>
+              <span class="badge-pill blue" style="margin-bottom:8px">General</span>
+              <div class="notice-headline">IUT 35th Convocation Ceremony Announcement</div>
+            </div>
+            <div class="mono" style="font-size:12px;color:var(--text-muted)">08 Sep 2026</div>
+          </div>
+          <div class="notice-expand-text">The 35th Convocation of IUT is tentatively scheduled from 3 to 11 October 2026. Graduating cohorts must ensure comprehensive clearance across the central library, halls of residence, and accounts office by 30 September 2026.</div>
+        </div>
+
+        <div class="notice-item-card" data-category="academic" onclick="toggleNotice(this)">
+          <div class="notice-header-row">
+            <div>
+              <span class="badge-pill green" style="margin-bottom:8px">Academic Affairs</span>
+              <div class="notice-headline">Course Pre-Registration for Winter Semester 2025–2026</div>
+            </div>
+            <div class="mono" style="font-size:12px;color:var(--text-muted)">01 Sep 2026</div>
+          </div>
+          <div class="notice-expand-text">Online course pre-registration for the upcoming Winter Semester (AY 2025-26) will open on 20 October 2026. Students are advised to consult their designated academic advisors prior to locking in their course rosters.</div>
+        </div>
+
+        <div class="notice-item-card" data-category="academic" onclick="toggleNotice(this)">
+          <div class="notice-header-row">
+            <div>
+              <span class="badge-pill amber" style="margin-bottom:8px">University Holiday</span>
+              <div class="notice-headline">Eid-e-Milad-un-Nabi Observance Notice</div>
+            </div>
+            <div class="mono" style="font-size:12px;color:var(--text-muted)">22 Aug 2026</div>
+          </div>
+          <div class="notice-expand-text">The university campus will remain closed on Wednesday, 26 August 2026, in solemn observance of Eid-e-Milad-un-Nabi (SM). All scheduled lectures, laboratory assessments, and administrative services will be suspended.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 9: ACADEMIC CALENDAR                -->
+<!-- ══════════════════════════════════════════ -->
+<div id="calendar" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-calendar"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Academic Calendar</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="term-pill">AY 2024–2025</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Summer Term Current -->
+        <div class="card-box" style="margin-bottom:20px">
+          <div class="card-box-header">
+            <h3 class="card-box-title">Summer Semester Timeline (AY 2024–2025)</h3>
+            <span class="badge-pill green">Active Semester</span>
+          </div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Commencement of Regular Classes</span><span class="profile-data-val mono">20 April 2026, Monday</span></div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Eid-ul-Adha Vacation</span><span class="profile-data-val mono">25 May – 29 May 2026</span></div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Mid-Semester Examination</span><span class="profile-data-val mono" style="color:var(--brick)">23 June – 06 July 2026</span></div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Classes Resume Post-Midterm</span><span class="profile-data-val mono">07 July – 24 August 2026</span></div>
+          <div class="profile-data-row" style="background:var(--red-light);padding:12px;border-radius:8px"><span class="profile-data-lbl" style="color:var(--brick);font-weight:700">⚡ Semester Final Examination</span><span class="profile-data-val mono" style="color:var(--brick);font-weight:700">28 Aug – 10 Sep 2026</span></div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Industrial Training</span><span class="profile-data-val mono">14 Sep – 09 Oct 2026</span></div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Next Academic Year Class Starts</span><span class="profile-data-val mono">19 October 2026, Monday</span></div>
+        </div>
+
+        <!-- Winter Term Past -->
+        <div class="card-box" style="margin-bottom:20px">
+          <div class="card-box-header">
+            <h3 class="card-box-title">Winter Semester Timeline (AY 2024–2025)</h3>
+            <span class="badge-pill gray">Completed</span>
+          </div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Starting of Regular Classes</span><span class="profile-data-val mono">10 November 2025, Monday</span></div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Mid-Semester Examination</span><span class="profile-data-val mono">05 Jan – 16 Jan 2026</span></div>
+          <div class="profile-data-row"><span class="profile-data-lbl">Semester Final Examination</span><span class="profile-data-val mono">30 March – 12 April 2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCREEN 10: FEES & PAYMENTS                 -->
+<!-- ══════════════════════════════════════════ -->
+<div id="fees" class="screen">
+  <div class="app">
+    <div class="sidebar" id="sb-fees"></div>
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-breadcrumbs">
+            <span class="crumb-root">Portal</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active">Fees & Payments</span>
+          </div>
+          <div class="term-pill">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--primary)"></span>
+            2nd Year (Semesters 3 & 4) • AY 2024–25
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="topbar-search-input" placeholder="Search courses, results, notices…" onkeydown="if(event.key==='Enter')handleGlobalSearch(this.value)">
+          </div>
+          <button class="topbar-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <button class="topbar-btn" onclick="go('notices')" title="Notifications">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <div class="notif-dot"></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Hero Header -->
+        <div class="hero-banner" style="margin-bottom:20px">
+          <div class="hero-text">
+            <h2>Fees & Payments</h2>
+            <p>Undergraduate Programmes: B.Sc. Engineering and BBA • Official 4-Year Fee Structure & Yearly Payment Schedule</p>
+            <div class="hero-stats-row">
+              <div class="hero-stat-badge"><span>Program:</span> <strong>B.Sc. Engineering (SWE)</strong></div>
+              <div class="hero-stat-badge"><span>Current Level:</span> <strong>2nd Year (4th Sem)</strong></div>
+              <div class="hero-stat-badge"><span>Status:</span> <strong id="hero-badge-status">Non-Residential ($3,000/yr)</strong></div>
+              <div class="hero-stat-badge"><span>Official Rate:</span> <strong>1 USD = 120 BDT</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View-Only Disclaimer Banner -->
+        <div class="fees-viewonly-banner">
+          <div class="fees-viewonly-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </div>
+          <div class="fees-viewonly-text">
+            <div class="fees-viewonly-title">View-only. Payments are processed by the Finance Office, not through the portal.</div>
+            <div>All academic fee installments must be deposited strictly via <strong>AB Bank Ltd</strong>. 1st Year fees are paid at the time of admission; 2nd, 3rd and 4th year dues are deposited prior to the start of the Academic Year (Winter Semester).</div>
+          </div>
+        </div>
+
+        <!-- Residence Mode Filter Tabs -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+          <div class="segmented-tabs" style="margin-bottom:0">
+            <div class="seg-tab active" id="btn-tab-nonres" onclick="setFeeResidence('non-res')">Non-Residential ($3,000/year)</div>
+            <div class="seg-tab" id="btn-tab-res" onclick="setFeeResidence('res')">Residential ($4,500/year)</div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted)">
+            Category: <strong style="color:var(--text-main)">Self-financed / Without OIC Scholarship (Host Country)</strong>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards (Current Standing) -->
+        <div class="stat-grid" style="margin-bottom:24px">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-label">Total this Year (2nd Yr)</span>
+              <span class="badge-pill gray" id="card-term-tag">AY 2024–25</span>
+            </div>
+            <div class="stat-value mono" id="card-total-year" style="color:var(--text-main)">$3,000</div>
+            <div class="stat-sub" id="card-total-year-sub">Tuition $2,500 + Others $500 (৳3,60,000)</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-label">Paid (2nd Year)</span>
+              <span class="badge-pill green" id="card-paid-tag">Cleared</span>
+            </div>
+            <div class="stat-value mono" id="card-paid-year" style="color:var(--primary)">$1,500</div>
+            <div class="stat-sub" id="card-paid-year-sub">Installment 1 paid via AB Bank (৳1,80,000)</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-label">Pending (2nd Year)</span>
+              <span class="badge-pill amber" id="card-pending-tag">Due in 6 Days</span>
+            </div>
+            <div class="stat-value mono" id="card-pending-year" style="color:var(--amber)">$1,500</div>
+            <div class="stat-sub" id="card-pending-year-sub">Installment 2 payable (৳1,80,000)</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-label">4-Year Total Commitment</span>
+              <span class="badge-pill blue" id="card-overall-tag">Non-Residential</span>
+            </div>
+            <div class="stat-value mono" id="card-overall-total" style="font-size:22px;color:var(--blue)">$14,100</div>
+            <div class="stat-sub" id="card-overall-sub">Total Cleared to Date: $6,600 (৳7,92,000)</div>
+          </div>
+        </div>
+
+        <!-- Pending Balance Action Box -->
+        <div class="pending-balance-box">
+          <div class="pending-balance-info">
+            <div class="pending-balance-icon-wrap">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <div class="pending-balance-title" id="pending-box-title">Pending balance: $1,500 (৳1,80,000)</div>
+              <div class="pending-balance-sub">2nd Year remaining tuition installment • Due prior to term finalization (Sep 24, 2026)</div>
+            </div>
+          </div>
+          <div class="pending-balance-actions" style="display:flex;gap:10px;align-items:center">
+            <button class="btn-auth" style="padding:10px 20px;gap:8px" onclick="toggleFeeBreakdown()">
+              <span id="breakdown-btn-text">View breakdown</span>
+              <svg id="breakdown-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition:transform 0.2s"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <button class="topbar-btn" style="width:auto;padding:10px 18px;font-size:12.5px;gap:6px" onclick="downloadChallanPdf()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download AB Bank Challan
+            </button>
+          </div>
+        </div>
+
+        <!-- Expandable Fee Breakdown Section -->
+        <div id="fee-breakdown-panel" class="fee-breakdown-section">
+          <div class="card-box-header" style="margin-bottom:16px">
+            <div>
+              <h3 class="card-box-title">2nd Year Head-Wise Dues & Installment Schedule</h3>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px">Calculated under official IUT Annual Academic Year fee provisions</p>
+            </div>
+            <div class="badge-pill amber" id="breakdown-status-tag">Current Balance: $1,500 (৳1,80,000)</div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="app-table">
+              <thead>
+                <tr>
+                  <th>Academic Item</th>
+                  <th>Fee Component</th>
+                  <th>Due Date / Timeline</th>
+                  <th style="text-align:center">Amount (USD)</th>
+                  <th style="text-align:center">Equivalent (BDT)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:rgba(8, 127, 91, 0.04)">
+                  <td>
+                    <strong>1st Year Admission Fees (One-time)</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Paid once at admission • Host Country registration</div>
+                  </td>
+                  <td><span class="badge-code">ADMISSION</span></td>
+                  <td class="mono">At Admission (Aug 2023)</td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--primary)">$2,000</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">৳2,40,000</td>
+                  <td><span class="badge-pill green">Paid • AB Bank</span></td>
+                </tr>
+                <tr style="background:rgba(8, 127, 91, 0.04)">
+                  <td>
+                    <strong>1st Year Tuition & Others ($2,500 + $600)</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">1st Year full clearance • Academic Year 2023–24</div>
+                  </td>
+                  <td><span class="badge-code">YEAR-1</span></td>
+                  <td class="mono">At Admission (Nov 2023)</td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--primary)">$3,100</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">৳3,72,000</td>
+                  <td><span class="badge-pill green">Paid • AB Bank</span></td>
+                </tr>
+                <tr style="background:rgba(8, 127, 91, 0.04)">
+                  <td>
+                    <strong>2nd Year Tuition & Dues — Installment 1</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Deposited prior to Winter Semester (Sem 3) • AY 2024–25</div>
+                  </td>
+                  <td><span class="badge-code">YEAR-2 (INST 1)</span></td>
+                  <td class="mono">Prior to Winter Sem (Aug 2024)</td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--primary)" id="breakdown-paid-inst">$1,500</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)" id="breakdown-paid-bdt">৳1,80,000</td>
+                  <td><span class="badge-pill green">Paid • AB Bank</span></td>
+                </tr>
+                <tr style="border-left:3px solid var(--amber)">
+                  <td>
+                    <strong>2nd Year Tuition & Dues — Installment 2</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Remaining 2nd year balance • Tuition ($1,250) + Others ($250)</div>
+                  </td>
+                  <td><span class="badge-code">YEAR-2 (INST 2)</span></td>
+                  <td class="mono" style="color:var(--brick);font-weight:700">Sep 24, 2026 (Due in 6d)</td>
+                  <td class="mono" style="text-align:center;font-weight:800;color:var(--amber)" id="breakdown-due-inst">$1,500</td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--amber)" id="breakdown-due-bdt">৳1,80,000</td>
+                  <td><span class="badge-pill amber">Pending • Action Required</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>3rd Year Tuition & Others ($2,500 + $500)</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Upcoming Academic Year 2025–2026</div>
+                  </td>
+                  <td><span class="badge-code">YEAR-3</span></td>
+                  <td class="mono">Prior to Winter Sem 2025</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)" id="breakdown-y3-val">$3,000</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)" id="breakdown-y3-bdt">৳3,60,000</td>
+                  <td><span class="badge-pill gray">Upcoming</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>4th Year Tuition & Others ($2,500 + $500)</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Upcoming Academic Year 2026–2027 (Final Year)</div>
+                  </td>
+                  <td><span class="badge-code">YEAR-4</span></td>
+                  <td class="mono">Prior to Winter Sem 2026</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)" id="breakdown-y4-val">$3,000</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)" id="breakdown-y4-bdt">৳3,60,000</td>
+                  <td><span class="badge-pill gray">Upcoming</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;margin-top:16px;background:var(--bg-surface-soft);border-radius:var(--radius-md);border:1px solid var(--border-color);flex-wrap:wrap;gap:12px">
+            <div style="font-size:12.5px;color:var(--text-muted)">
+              <strong>Payment Policy:</strong> 2nd, 3rd and 4th years fees should be deposited prior to the starting of the Academic Year (Winter Semester).
+            </div>
+            <div class="mono" style="font-size:13.5px">
+              Total 4-Yr: <strong id="summary-4yr-val">$14,100</strong> &nbsp;|&nbsp; Paid to date: <strong style="color:var(--primary)" id="summary-paid-val">$6,600</strong> &nbsp;|&nbsp; Immediate Due: <strong style="color:var(--amber)" id="summary-due-val">$1,500</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Table 1: Breakdown of Fees -->
+        <div class="card-box" style="margin-bottom:24px">
+          <div class="card-box-header">
+            <div>
+              <h3 class="card-box-title">BREAKDOWN OF FEES — Undergraduate Programmes</h3>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px">B.Sc. Engineering and BBA • Official Statutory Schedule</p>
+            </div>
+            <span class="badge-pill blue">Official Schedule</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="app-table">
+              <thead>
+                <tr>
+                  <th>BREAKDOWN OF FEES</th>
+                  <th style="text-align:center">1ST YEAR</th>
+                  <th style="text-align:center">2ND YEAR</th>
+                  <th style="text-align:center">3RD YEAR</th>
+                  <th style="text-align:center">4TH YEAR</th>
+                  <th style="text-align:right">TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Admission Fees</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">One-time at admission</div>
+                  </td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--text-main)">$2,000</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:right;font-weight:700;color:var(--text-main)">$2,000</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Tuition Fees</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">$2,500 per academic year</div>
+                  </td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--text-main)">$2,500</td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--primary)">$2,500</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">$2,500</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">$2,500</td>
+                  <td class="mono" style="text-align:right;font-weight:700;color:var(--text-main)">$10,000</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Accommodation and Food (Residential Students)</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">$1,500 per year for residential scholars</div>
+                  </td>
+                  <td class="mono" style="text-align:center;color:var(--text-secondary)">$1,500</td>
+                  <td class="mono" style="text-align:center;color:var(--text-secondary)">$1,500</td>
+                  <td class="mono" style="text-align:center;color:var(--text-secondary)">$1,500</td>
+                  <td class="mono" style="text-align:center;color:var(--text-secondary)">$1,500</td>
+                  <td class="mono" style="text-align:right;font-weight:700;color:var(--text-secondary)">$6,000</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Others</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Lab, library, medical, sports & internet</div>
+                  </td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--text-main)">$600</td>
+                  <td class="mono" style="text-align:center;font-weight:700;color:var(--primary)">$500</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">$500</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">$500</td>
+                  <td class="mono" style="text-align:right;font-weight:700;color:var(--text-main)">$2,100</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr style="background:rgba(8, 127, 91, 0.08);border-top:2px solid var(--primary);font-weight:800" id="row-nonres-highlight">
+                  <td>
+                    <div style="font-size:13.5px;color:var(--text-main)">Total: Non-Residential</div>
+                    <div style="font-size:11px;color:var(--primary)">★ Active Enrolled Student Calculation</div>
+                  </td>
+                  <td class="mono" style="text-align:center;font-size:14px;color:var(--primary)">$5,100</td>
+                  <td class="mono" style="text-align:center;font-size:14px;color:var(--amber)">$3,000</td>
+                  <td class="mono" style="text-align:center;font-size:14px;color:var(--text-muted)">$3,000</td>
+                  <td class="mono" style="text-align:center;font-size:14px;color:var(--text-muted)">$3,000</td>
+                  <td class="mono" style="text-align:right;font-size:15px;color:var(--primary)">$14,100</td>
+                </tr>
+                <tr style="background:var(--bg-surface-soft);font-weight:700" id="row-res-highlight">
+                  <td>
+                    <div style="font-size:13px;color:var(--text-main)">Total: Residential</div>
+                    <div style="font-size:11px;color:var(--text-muted)">Includes Hall Allotment & Dining</div>
+                  </td>
+                  <td class="mono" style="text-align:center;font-size:13px">$6,600</td>
+                  <td class="mono" style="text-align:center;font-size:13px">$4,500</td>
+                  <td class="mono" style="text-align:center;font-size:13px">$4,500</td>
+                  <td class="mono" style="text-align:center;font-size:13px">$4,500</td>
+                  <td class="mono" style="text-align:right;font-size:14px;color:var(--blue)">$20,100</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Official Table 2: Yearly Payment Schedule -->
+        <div class="card-box" style="margin-bottom:24px">
+          <div class="card-box-header">
+            <div>
+              <h3 class="card-box-title">YEARLY PAYMENT SCHEDULE</h3>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px">Student category classification & academic deposit rules</p>
+            </div>
+            <span class="badge-pill green">OIC / Self-Financed</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="app-table">
+              <thead>
+                <tr>
+                  <th>STUDENT CATEGORY</th>
+                  <th>Status</th>
+                  <th style="text-align:center">1ST YEAR</th>
+                  <th style="text-align:center">2ND YEAR</th>
+                  <th style="text-align:center">3RD YEAR</th>
+                  <th style="text-align:center">4TH YEAR</th>
+                  <th style="text-align:right">TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Full OIC Scholarship</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Top 2 merit scholars from host country (*Refundable amount)</div>
+                  </td>
+                  <td><span class="badge-pill blue">Residential</span></td>
+                  <td class="mono" style="text-align:center;font-weight:700">$1,000*</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:right;color:var(--text-muted)">----</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Partial OIC Scholarship / IUT partial Scholarship</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Institutional tuition subvention</div>
+                  </td>
+                  <td><span class="badge-pill blue">Residential</span></td>
+                  <td class="mono" style="text-align:center;font-weight:700">$6,600</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">----</td>
+                  <td class="mono" style="text-align:right;font-weight:700">$6,600</td>
+                </tr>
+                <tr style="background:rgba(8, 127, 91, 0.06);border-left:3px solid var(--primary)">
+                  <td>
+                    <strong>Without OIC Scholarship / Self-financed</strong>
+                    <div style="font-size:11px;color:var(--primary);font-weight:700">★ Current Student Category (Host Country)</div>
+                  </td>
+                  <td><span class="badge-pill green">Non-Residential</span></td>
+                  <td class="mono" style="text-align:center;font-weight:800;color:var(--primary)">$5,100</td>
+                  <td class="mono" style="text-align:center;font-weight:800;color:var(--amber)">$3,000</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">$3,000</td>
+                  <td class="mono" style="text-align:center;color:var(--text-muted)">$3,000</td>
+                  <td class="mono" style="text-align:right;font-weight:800;color:var(--primary)">$14,100</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Without OIC Scholarship / Self-financed</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Self-financed with on-campus accommodation & food</div>
+                  </td>
+                  <td><span class="badge-pill blue">Residential</span></td>
+                  <td class="mono" style="text-align:center">$6,600</td>
+                  <td class="mono" style="text-align:center">$4,500</td>
+                  <td class="mono" style="text-align:center">$4,500</td>
+                  <td class="mono" style="text-align:center">$4,500</td>
+                  <td class="mono" style="text-align:right;font-weight:700;color:var(--text-main)">$20,100</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="padding:16px 20px;background:var(--bg-surface-soft);border-top:1px solid var(--border-color);border-radius:0 0 var(--radius-lg) var(--radius-lg);font-size:12px;color:var(--text-secondary);line-height:1.65">
+            <div style="margin-bottom:8px">
+              <strong style="color:var(--text-main)">* Scholarship Caution Deposit Note:</strong> 2 (Two) full OIC scholarships for host country are awarded to two top ranked admitted students in the merit list of the admission process. But they have to deposit a refundable amount of US$1,000 which will be refunded only after completing one year.
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:12px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border-color)">
+              <div>
+                <strong style="color:var(--text-main)">Payment deadline of First year fees:</strong><br>
+                • International students: To be indicated on the offer letter<br>
+                • Host Country students: <em>At the time of admission</em>
+              </div>
+              <div>
+                <strong style="color:var(--text-main)">Payment of 2nd, 3rd and 4th years:</strong><br>
+                • Should be deposited prior to the starting of the Academic Year (Winter Semester).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Payment History Table -->
+        <div class="card-box" style="margin-bottom:24px">
+          <div class="card-box-header">
+            <div>
+              <h3 class="card-box-title">Payment history</h3>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px">Verified transaction log from IUT Finance & Accounts Office (AB Bank Counter)</p>
+            </div>
+            <div class="badge-pill blue" style="font-size:11px;padding:6px 12px">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Only Authorized Method: AB Bank
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="app-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Method</th>
+                  <th>Amount (USD)</th>
+                  <th>Amount (BDT @ 120)</th>
+                  <th>Status</th>
+                  <th>Challan Slip</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono" style="font-weight:600">Aug 02, 2024</td>
+                  <td>
+                    <strong>2nd Year Tuition & Dues — Installment 1</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Academic Year 2024–2025 • Winter Semester Clearance</div>
+                  </td>
+                  <td>
+                    <span class="badge-pill blue" style="font-weight:700">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                      AB Bank
+                    </span>
+                  </td>
+                  <td class="mono" style="font-size:14px;font-weight:700;color:var(--text-main)">$1,500</td>
+                  <td class="mono" style="font-size:13px;color:var(--text-muted)">৳1,80,000</td>
+                  <td><span class="badge-pill green">Paid</span></td>
+                  <td>
+                    <button class="topbar-btn" style="width:auto;padding:6px 12px;font-size:11px;gap:5px" onclick="showReceipt('CH-2024-0802', '$1,500 (৳1,80,000)', '2nd Year Tuition & Dues — Installment 1', 'Aug 02, 2024')">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      View Slip
+                    </button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="mono" style="font-weight:600">Nov 10, 2023</td>
+                  <td>
+                    <strong>1st Year Tuition & Session Dues</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">Academic Year 2023–2024 • Annual Tuition ($2,500) + Others ($600)</div>
+                  </td>
+                  <td>
+                    <span class="badge-pill blue" style="font-weight:700">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                      AB Bank
+                    </span>
+                  </td>
+                  <td class="mono" style="font-size:14px;font-weight:700;color:var(--text-main)">$3,100</td>
+                  <td class="mono" style="font-size:13px;color:var(--text-muted)">৳3,72,000</td>
+                  <td><span class="badge-pill green">Paid</span></td>
+                  <td>
+                    <button class="topbar-btn" style="width:auto;padding:6px 12px;font-size:11px;gap:5px" onclick="showReceipt('CH-2023-1110', '$3,100 (৳3,72,000)', '1st Year Tuition & Session Dues', 'Nov 10, 2023')">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      View Slip
+                    </button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="mono" style="font-weight:600">Aug 15, 2023</td>
+                  <td>
+                    <strong>Undergraduate Admission Fees (One-Time)</strong>
+                    <div style="font-size:11px;color:var(--text-muted)">B.Sc. Engineering Admission & Registration Charge (Paid at Admission)</div>
+                  </td>
+                  <td>
+                    <span class="badge-pill blue" style="font-weight:700">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                      AB Bank
+                    </span>
+                  </td>
+                  <td class="mono" style="font-size:14px;font-weight:700;color:var(--text-main)">$2,000</td>
+                  <td class="mono" style="font-size:13px;color:var(--text-muted)">৳2,40,000</td>
+                  <td><span class="badge-pill green">Paid</span></td>
+                  <td>
+                    <button class="topbar-btn" style="width:auto;padding:6px 12px;font-size:11px;gap:5px" onclick="showReceipt('CH-2023-0815', '$2,000 (৳2,40,000)', 'Undergraduate Admission Fees (One-Time)', 'Aug 15, 2023')">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      View Slip
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- AB Bank Official Payment Channel Card -->
+        <div class="bank-channel-card">
+          <div class="bank-channel-header">
+            <div class="bank-badge">
+              <span class="bank-abbr">AB</span>
+              <span>AB Bank Limited</span>
+            </div>
+            <span class="badge-pill green">Exclusive Institutional Partner</span>
+          </div>
+          <p class="bank-channel-desc">
+            As mandated by the Islamic University of Technology Finance Directorate, all tuition, semester dues, and admission fees must be cleared exclusively through <strong>AB Bank Limited</strong>. Third-party MFS (bKash/Nagad/Rocket) or personal bank transfers are strictly non-acceptable.
+          </p>
+          <div class="bank-details-grid">
+            <div class="bank-detail-item">
+              <span class="lbl">Authorized Branch:</span>
+              <span class="val">Board Bazar Branch, Gazipur-1704</span>
+            </div>
+            <div class="bank-detail-item">
+              <span class="lbl">Account Name:</span>
+              <span class="val">Islamic University of Technology</span>
+            </div>
+            <div class="bank-detail-item">
+              <span class="lbl">Account Number:</span>
+              <span class="val mono">4015-773421-001</span>
+            </div>
+            <div class="bank-detail-item">
+              <span class="lbl">Deposit Slip:</span>
+              <span class="val">3-Part IUT Special Challan Form</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════════ -->
+<!-- ADMIT CARD MODAL                           -->
+<!-- ══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="admit-overlay" onclick="closeAdmit(event)">
+  <div class="admit-card-box" onclick="event.stopPropagation()">
+    <div class="admit-top-seal">
+      <div style="width:48px;height:48px;background:#ffffff;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:5px">
+        <img src="assets/pic.png" style="width:100%;height:100%;object-fit:contain">
+      </div>
+      <div>
+        <h2 style="font-size:18px;font-weight:800;letter-spacing:-0.3px">ISLAMIC UNIVERSITY OF TECHNOLOGY</h2>
+        <p style="font-size:12px;color:rgba(255,255,255,0.7)">Office of the Controller of Examinations • Official Admit Card</p>
+      </div>
+    </div>
+    <div class="admit-body-pad">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+        <div>
+          <div style="font-size:12px;color:var(--text-muted)">Candidate Name</div>
+          <div style="font-size:17px;font-weight:800;color:var(--text-main)">Rakibur Rahman Ananta</div>
+          <div class="mono" style="font-size:13px;color:var(--primary);margin-top:2px;font-weight:700">Student ID: 230042128</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px">BSc in Software Engineering • 4th Semester</div>
+          <div style="font-size:12px;color:var(--text-muted)">Session: Summer 2024–2025</div>
+        </div>
+        <div style="width:80px;height:96px;background:linear-gradient(135deg,var(--primary) 0%,#0ca678 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;font-weight:800">
+          R
+        </div>
+      </div>
+
+      <div style="background:var(--amber-light);border:1px solid rgba(217,119,6,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:16px;font-weight:600">
+        ⚠ Candidate Instructions: Present this hall pass along with student photo ID. No mobile devices permitted in hall.
+      </div>
+
+      <div class="table-responsive" style="margin-bottom:20px">
+        <table class="app-table">
+          <thead>
+            <tr><th>Date</th><th>Course Title</th><th>Code</th><th>Time</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>28 Aug 2026</td><td>Data Communication & Networking</td><td class="mono">CSE 4411</td><td class="mono">2:30–4:30 PM</td></tr>
+            <tr><td>31 Aug 2026</td><td>Algorithm Design & Analysis</td><td class="mono">CSE 4403</td><td class="mono">2:30–4:30 PM</td></tr>
+            <tr><td>02 Sep 2026</td><td>Database Management Systems II</td><td class="mono">CSE 4409</td><td class="mono">2:30–4:30 PM</td></tr>
+            <tr><td>04 Sep 2026</td><td>Engineering Ethics</td><td class="mono">HUM 4441</td><td class="mono">2:30–4:30 PM</td></tr>
+            <tr><td>07 Sep 2026</td><td>Probability & Statistics</td><td class="mono">MATH 4441</td><td class="mono">2:30–4:30 PM</td></tr>
+            <tr><td>10 Sep 2026</td><td>Software Requirements Specification</td><td class="mono">SWE 4401</td><td class="mono">2:30–4:30 PM</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="admit-actions-row" style="display:flex;justify-content:flex-end;gap:10px">
+        <button class="topbar-btn" style="width:auto;padding:8px 16px;font-size:13px" onclick="closeAdmit()">Close</button>
+        <button class="btn-auth" style="width:auto;padding:8px 20px;font-size:13px" onclick="downloadAdmitCard()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Print / Save PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- FEEDBACK MODAL                             -->
+<!-- ══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="fb-overlay" onclick="closeFeedback(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h2 id="fb-modal-title" style="font-size:18px;font-weight:700;margin-bottom:4px">Course Quality Evaluation</h2>
+    <p id="fb-modal-sub" style="font-size:13px;color:var(--text-muted);margin-bottom:20px"></p>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--text-main)">1. Teaching Effectiveness & Clarity</div>
+      <div class="stars-rating-wrap" data-rating="teaching">
+        <span class="rating-star-btn" onclick="rate('teaching',1)">★</span><span class="rating-star-btn" onclick="rate('teaching',2)">★</span><span class="rating-star-btn" onclick="rate('teaching',3)">★</span><span class="rating-star-btn" onclick="rate('teaching',4)">★</span><span class="rating-star-btn" onclick="rate('teaching',5)">★</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--text-main)">2. Course Materials & Practical Rigor</div>
+      <div class="stars-rating-wrap" data-rating="material">
+        <span class="rating-star-btn" onclick="rate('material',1)">★</span><span class="rating-star-btn" onclick="rate('material',2)">★</span><span class="rating-star-btn" onclick="rate('material',3)">★</span><span class="rating-star-btn" onclick="rate('material',4)">★</span><span class="rating-star-btn" onclick="rate('material',5)">★</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--text-main)">3. Instructor Punctuality & Availability</div>
+      <div class="stars-rating-wrap" data-rating="punctuality">
+        <span class="rating-star-btn" onclick="rate('punctuality',1)">★</span><span class="rating-star-btn" onclick="rate('punctuality',2)">★</span><span class="rating-star-btn" onclick="rate('punctuality',3)">★</span><span class="rating-star-btn" onclick="rate('punctuality',4)">★</span><span class="rating-star-btn" onclick="rate('punctuality',5)">★</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:var(--text-main)">4. Overall Learning Satisfaction</div>
+      <div class="stars-rating-wrap" data-rating="overall">
+        <span class="rating-star-btn" onclick="rate('overall',1)">★</span><span class="rating-star-btn" onclick="rate('overall',2)">★</span><span class="rating-star-btn" onclick="rate('overall',3)">★</span><span class="rating-star-btn" onclick="rate('overall',4)">★</span><span class="rating-star-btn" onclick="rate('overall',5)">★</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <label style="font-size:12px;font-weight:700;color:var(--text-main)">Anonymous Suggestions / Feedback</label>
+      <textarea id="fb-comments" placeholder="Highlight key strengths or constructive recommendations for improvement..."></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:24px">
+      <button class="topbar-btn" style="width:auto;padding:8px 16px;font-size:13px" onclick="closeFeedback()">Cancel</button>
+      <button class="btn-auth" style="width:auto;padding:8px 22px;font-size:13px" onclick="submitFeedback()">Submit Anonymous Feedback</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- AB BANK CHALLAN / RECEIPT MODAL            -->
+<!-- ══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="challan-overlay" onclick="closeChallan(event)">
+  <div class="admit-card-box" onclick="event.stopPropagation()" style="max-width:540px">
+    <div class="admit-top-seal" style="background:linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%)">
+      <div style="width:48px;height:48px;background:#ffffff;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:5px">
+        <img src="assets/pic.png" style="width:100%;height:100%;object-fit:contain">
+      </div>
+      <div>
+        <h2 style="font-size:17px;font-weight:800;letter-spacing:-0.3px">ISLAMIC UNIVERSITY OF TECHNOLOGY</h2>
+        <p style="font-size:11.5px;color:rgba(255,255,255,0.75)">AB Bank Institutional Deposit Challan • Student Copy</p>
+      </div>
+    </div>
+
+    <div style="padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border-color)">
+        <div>
+          <span style="font-size:11px;text-transform:uppercase;color:var(--text-muted);font-weight:700">Challan Ref:</span>
+          <div class="mono" id="receipt-id" style="font-size:15px;font-weight:800;color:var(--primary)">CH-2026-0802</div>
+        </div>
+        <div style="text-align:right">
+          <span style="font-size:11px;text-transform:uppercase;color:var(--text-muted);font-weight:700">Payment Status:</span>
+          <div><span class="badge-pill green">Cleared & Verified</span></div>
+        </div>
+      </div>
+
+      <div class="profile-data-row"><span class="profile-data-lbl">Description</span><span class="profile-data-val" id="receipt-desc" style="font-weight:700">Semester 4 tuition — installment 1</span></div>
+      <div class="profile-data-row"><span class="profile-data-lbl">Deposit Date</span><span class="profile-data-val mono" id="receipt-date">Aug 02, 2026</span></div>
+      <div class="profile-data-row"><span class="profile-data-lbl">Authorized Bank</span><span class="profile-data-val" style="font-weight:700;color:#2563eb">AB Bank Limited (Board Bazar Br.)</span></div>
+      <div class="profile-data-row"><span class="profile-data-lbl">Payment Method</span><span class="profile-data-val"><span class="badge-pill blue">AB Bank Branch Cash/Challan</span></span></div>
+      <div class="profile-data-row"><span class="profile-data-lbl">Deposited For</span><span class="profile-data-val" id="receipt-student">Rakibur Rahman / Sieam (230042128)</span></div>
+      <div class="profile-data-row" style="background:var(--primary-light);padding:10px 14px;border-radius:8px;margin-top:10px"><span class="profile-data-lbl" style="font-weight:800;color:var(--text-main)">Amount Paid</span><span class="profile-data-val mono" id="receipt-amt" style="font-size:18px;font-weight:800;color:var(--primary)">৳25,000</span></div>
+
+      <div style="margin-top:18px;padding:12px;border:1px dashed var(--border-color);border-radius:8px;display:flex;align-items:center;gap:12px">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div style="font-size:11.5px;color:var(--text-muted);line-height:1.4">
+          Electronic seal issued by IUT Directorate of Finance. Verified under AB Bank transaction reconciliation batch #99214.
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px">
+        <button class="topbar-btn" style="width:auto;padding:8px 16px;font-size:12px" onclick="closeChallan()">Close</button>
+        <button class="btn-auth" style="width:auto;padding:8px 18px;font-size:12px" onclick="window.print()">Print Slip</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST ALERT -->
+<div class="toast-alert" id="app-toast"></div>
+
+<script>
+// ── NAVIGATION STRUCTURE ──
+const NAV_GROUPS = [
+  {
+    group: 'Overview',
+    items: [
+      { id: 'dashboard', label: 'Dashboard', icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>' },
+      { id: 'profile', label: 'Student Profile', icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
+      { id: 'fees', label: 'Fees & Payments', icon: '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>' },
+      { id: 'calendar', label: 'Academic Calendar', icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/>' }
+    ]
+  },
+  {
+    group: 'Academics',
+    items: [
+      { id: 'results', label: 'Semester Results', icon: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>' },
+      { id: 'exams', label: 'Upcoming Exams', icon: '<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/>' },
+      { id: 'timetable', label: 'Weekly Timetable', icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>' },
+      { id: 'feedback', label: 'Faculty Feedback', icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' }
+    ]
+  },
+  {
+    group: 'Updates',
+    items: [
+      { id: 'notices', label: 'Circulars & Notices', icon: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>', badge: 3 }
+    ]
+  }
+];
+
+function buildSidebar(activeId) {
+  return `
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-inner">
+        <div class="brand-icon-box">
+          <img src="assets/pic.png" alt="IUT Emblem">
+        </div>
+        <div class="brand-info">
+          <div class="brand-title">IUT SIS</div>
+          <div class="brand-subtitle">Student Portal</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      ${NAV_GROUPS.map(g => `
+        <div class="nav-group-label">${g.group}</div>
+        ${g.items.map(item => `
+          <div class="nav-link ${item.id === activeId ? 'active' : ''}" onclick="go('${item.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${item.icon}</svg>
+            <span>${item.label}</span>
+            ${item.badge ? `<span class="badge-count" id="sidebar-notice-count">${item.badge}</span>` : ''}
+          </div>
+        `).join('')}
+      `).join('')}
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user-card">
+        <div class="user-avatar-wrap">
+          <span>R</span>
+          <div class="user-online-pip"></div>
+        </div>
+        <div class="user-meta-text">
+          <div class="user-meta-name">Rakibur Rahman</div>
+          <div class="user-meta-role">ID: 230042128</div>
+        </div>
+        <button class="btn-sidebar-logout" onclick="logout()" title="Logout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// Build all sidebars
+document.querySelectorAll('[id^="sb-"]').forEach(el => {
+  const sid = el.id.replace('sb-','');
+  el.innerHTML = buildSidebar(sid);
+});
+
+// ── NAVIGATION CONTROLLER ──
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+    const content = target.querySelector('.content');
+    if (content) content.scrollTop = 0;
+  }
+}
+
+
+
+// ── FEES RESIDENCE STATUS SWITCHER ──
+let feeResidenceMode = 'non-res';
+
+function setFeeResidence(mode) {
+  feeResidenceMode = mode;
+  const isRes = mode === 'res';
+  
+  // Update toggle buttons
+  document.getElementById('btn-tab-nonres')?.classList.toggle('active', !isRes);
+  document.getElementById('btn-tab-res')?.classList.toggle('active', isRes);
+
+  // Update Hero badge
+  const heroBadge = document.getElementById('hero-badge-status');
+  if (heroBadge) heroBadge.textContent = isRes ? 'Residential ($4,500/yr)' : 'Non-Residential ($3,000/yr)';
+
+  // Update Metric Cards
+  const totalYr = document.getElementById('card-total-year');
+  const totalYrSub = document.getElementById('card-total-year-sub');
+  const paidYr = document.getElementById('card-paid-year');
+  const paidYrSub = document.getElementById('card-paid-year-sub');
+  const pendYr = document.getElementById('card-pending-year');
+  const pendYrSub = document.getElementById('card-pending-year-sub');
+  const overallTot = document.getElementById('card-overall-total');
+  const overallSub = document.getElementById('card-overall-sub');
+  const overallTag = document.getElementById('card-overall-tag');
+
+  if (isRes) {
+    if (totalYr) totalYr.textContent = '$4,500';
+    if (totalYrSub) totalYrSub.textContent = 'Tuition $2,500 + Acc/Food $1,500 + Others $500 (৳5,40,000)';
+    if (paidYr) paidYr.textContent = '$2,250';
+    if (paidYrSub) paidYrSub.textContent = 'Installment 1 paid via AB Bank (৳2,70,000)';
+    if (pendYr) pendYr.textContent = '$2,250';
+    if (pendYrSub) pendYrSub.textContent = 'Installment 2 payable (৳2,70,000)';
+    if (overallTot) overallTot.textContent = '$20,100';
+    if (overallSub) overallSub.textContent = 'Total Cleared to Date: $8,850 (৳10,62,000)';
+    if (overallTag) overallTag.textContent = 'Residential';
+  } else {
+    if (totalYr) totalYr.textContent = '$3,000';
+    if (totalYrSub) totalYrSub.textContent = 'Tuition $2,500 + Others $500 (৳3,60,000)';
+    if (paidYr) paidYr.textContent = '$1,500';
+    if (paidYrSub) paidYrSub.textContent = 'Installment 1 paid via AB Bank (৳1,80,000)';
+    if (pendYr) pendYr.textContent = '$1,500';
+    if (pendYrSub) pendYrSub.textContent = 'Installment 2 payable (৳1,80,000)';
+    if (overallTot) overallTot.textContent = '$14,100';
+    if (overallSub) overallSub.textContent = 'Total Cleared to Date: $6,600 (৳7,92,000)';
+    if (overallTag) overallTag.textContent = 'Non-Residential';
+  }
+
+  // Update Pending Box
+  const pendingBoxTitle = document.getElementById('pending-box-title');
+  if (pendingBoxTitle) {
+    pendingBoxTitle.textContent = isRes ? 'Pending balance: $2,250 (৳2,70,000)' : 'Pending balance: $1,500 (৳1,80,000)';
+  }
+
+  // Update Breakdown table row amounts
+  const paidInst = document.getElementById('breakdown-paid-inst');
+  const paidBdt = document.getElementById('breakdown-paid-bdt');
+  const dueInst = document.getElementById('breakdown-due-inst');
+  const dueBdt = document.getElementById('breakdown-due-bdt');
+  const y3Val = document.getElementById('breakdown-y3-val');
+  const y3Bdt = document.getElementById('breakdown-y3-bdt');
+  const y4Val = document.getElementById('breakdown-y4-val');
+  const y4Bdt = document.getElementById('breakdown-y4-bdt');
+  const sum4yr = document.getElementById('summary-4yr-val');
+  const sumPaid = document.getElementById('summary-paid-val');
+  const sumDue = document.getElementById('summary-due-val');
+  const bTag = document.getElementById('breakdown-status-tag');
+
+  if (paidInst) paidInst.textContent = isRes ? '$2,250' : '$1,500';
+  if (paidBdt) paidBdt.textContent = isRes ? '৳2,70,000' : '৳1,80,000';
+  if (dueInst) dueInst.textContent = isRes ? '$2,250' : '$1,500';
+  if (dueBdt) dueBdt.textContent = isRes ? '৳2,70,000' : '৳1,80,000';
+  if (y3Val) y3Val.textContent = isRes ? '$4,500' : '$3,000';
+  if (y3Bdt) y3Bdt.textContent = isRes ? '৳5,40,000' : '৳3,60,000';
+  if (y4Val) y4Val.textContent = isRes ? '$4,500' : '$3,000';
+  if (y4Bdt) y4Bdt.textContent = isRes ? '৳5,40,000' : '৳3,60,000';
+  if (sum4yr) sum4yr.textContent = isRes ? '$20,100' : '$14,100';
+  if (sumPaid) sumPaid.textContent = isRes ? '$8,850' : '$6,600';
+  if (sumDue) sumDue.textContent = isRes ? '$2,250' : '$1,500';
+  if (bTag) bTag.textContent = isRes ? 'Current Balance: $2,250 (৳2,70,000)' : 'Current Balance: $1,500 (৳1,80,000)';
+
+  showToast(`Switched view to ${isRes ? 'Residential ($4,500/year)' : 'Non-Residential ($3,000/year)'} schedule.`, 'info');
+}
+
+// ── FEES & PAYMENTS CONTROLLERS ──
+function toggleFeeBreakdown() {
+  const panel = document.getElementById('fee-breakdown-panel');
+  const btnText = document.getElementById('breakdown-btn-text');
+  const chevron = document.getElementById('breakdown-chevron');
+  if (!panel) return;
+  const isShown = panel.classList.toggle('show');
+  if (isShown) {
+    btnText.textContent = 'Hide breakdown';
+    chevron.style.transform = 'rotate(180deg)';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    btnText.textContent = 'View breakdown';
+    chevron.style.transform = 'rotate(0deg)';
+  }
+}
+
+function showReceipt(slipId, amount, desc, date) {
+  document.getElementById('receipt-id').textContent = slipId;
+  document.getElementById('receipt-amt').textContent = amount;
+  document.getElementById('receipt-desc').textContent = desc;
+  document.getElementById('receipt-date').textContent = date;
+  
+  const studentMeta = document.querySelector('.user-meta-name')?.textContent || 'Rakibur Rahman';
+  const idMeta = document.querySelector('.user-meta-role')?.textContent?.replace('ID: ','') || '230042128';
+  const el = document.getElementById('receipt-student');
+  if (el) el.textContent = `${studentMeta} (ID: ${idMeta}) • Dept. of CSE`;
+
+  const overlay = document.getElementById('challan-overlay');
+  if (overlay) overlay.classList.add('open');
+}
+
+function closeChallan(e) {
+  if (!e || e.target === document.getElementById('challan-overlay')) {
+    const overlay = document.getElementById('challan-overlay');
+    if (overlay) overlay.classList.remove('open');
+  }
+}
+
+function downloadChallanPdf() {
+  showToast('AB Bank 3-Part Deposit Challan downloaded for Student Clearance.', 'success');
+}
+
+function handleGlobalSearch(q) {
+  const query = (q || '').trim().toLowerCase();
+  if (!query) return;
+  if (query.includes('fee') || query.includes('pay') || query.includes('bill') || query.includes('bank') || query.includes('tuition')) {
+    go('fees');
+    showToast('Navigated to Fees & Payments', 'info');
+  } else if (query.includes('result') || query.includes('grade') || query.includes('cgpa') || query.includes('gpa')) {
+    go('results');
+    showToast('Navigated to Semester Results', 'info');
+  } else if (query.includes('exam') || query.includes('admit') || query.includes('mid') || query.includes('final')) {
+    go('exams');
+    showToast('Navigated to Upcoming Exams', 'info');
+  } else if (query.includes('time') || query.includes('routine') || query.includes('slot') || query.includes('class')) {
+    go('timetable');
+    showToast('Navigated to Weekly Timetable', 'info');
+  } else if (query.includes('notice') || query.includes('circular') || query.includes('news')) {
+    go('notices');
+    showToast('Navigated to Circulars & Notices', 'info');
+  } else if (query.includes('feedback') || query.includes('evaluat')) {
+    go('feedback');
+    showToast('Navigated to Faculty Course Feedback', 'info');
+  } else if (query.includes('cal') || query.includes('acad')) {
+    go('calendar');
+    showToast('Navigated to Academic Calendar', 'info');
+  } else if (query.includes('prof') || query.includes('student') || query.includes('id')) {
+    go('profile');
+    showToast('Navigated to Student Profile', 'info');
+  } else {
+    showToast(`No exact match for "${query}". Try "fees", "results", "exams", or "notices".`, 'info');
+  }
+}
+
+function handleLogin(e) {
+  if (e) e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!email || !pass) {
+    showToast('Please provide both academic email and password.', 'error');
+    return;
+  }
+  go('dashboard');
+  showToast('Welcome back, Rakibur Rahman! You are signed in.', 'success');
+}
+
+function logout() {
+  go('login');
+  showToast('You have securely signed out of your session.', 'info');
+}
+
+function forgotPassword() {
+  showToast('Password recovery: contact ICT Centre at ict.sis@iut-dhaka.edu', 'info');
+}
+
+// ── THEME SWITCHER (DARK / LIGHT) ──
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('iut_sis_theme', next);
+  updateThemeIcon(next);
+  showToast(`Theme switched to ${next === 'dark' ? 'Midnight Dark' : 'Prestige Light'}`, 'info');
+}
+
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('theme-icon');
+  if (icon) {
+    if (theme === 'dark') {
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+  }
+}
+
+// Check saved theme
+const savedTheme = localStorage.getItem('iut_sis_theme');
+if (savedTheme) {
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
+}
+
+// ── RESULTS DATA & SWITCHER ──
+const RESULTS_DATA = {
+  1: {
+    semesterGpa: '3.82',
+    cgpa: '3.82',
+    term: 'Winter Semester 2023–24',
+    credits: '19.5',
+    courses: [
+      { code: 'CSE 4107', name: 'Structured Programming I', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'CSE 4108', name: 'Structured Programming I Lab', credit: '1.5', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'MATH 4141', name: 'Geometry & Differential Calculus', credit: '3.0', grade: 'A', points: '3.75', status: 'Passed' },
+      { code: 'PHY 4143', name: 'Physics', credit: '3.0', grade: 'A-', points: '3.50', status: 'Passed' },
+      { code: 'PHY 4144', name: 'Physics Lab', credit: '0.75', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'HUM 4145', name: 'Islamic History & Culture', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'HUM 4147', name: 'Technology, Environment & Society', credit: '3.0', grade: 'A', points: '3.75', status: 'Passed' },
+      { code: 'SWE 4101', name: 'Introduction to Software Engineering', credit: '2.25', grade: 'A', points: '4.00', status: 'Passed' }
+    ]
+  },
+  2: {
+    semesterGpa: '3.85',
+    cgpa: '3.84',
+    term: 'Summer Semester 2023–24',
+    credits: '20.25',
+    courses: [
+      { code: 'CSE 4201', name: 'Discrete Mathematics', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'CSE 4203', name: 'Data Structures', credit: '3.0', grade: 'A', points: '3.75', status: 'Passed' },
+      { code: 'CSE 4204', name: 'Data Structures Lab', credit: '1.5', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'MATH 4241', name: 'Integral Calculus & Differential Equations', credit: '3.0', grade: 'A-', points: '3.50', status: 'Passed' },
+      { code: 'CHEM 4243', name: 'Chemistry', credit: '3.0', grade: 'A', points: '3.75', status: 'Passed' },
+      { code: 'CHEM 4244', name: 'Chemistry Lab', credit: '0.75', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'HUM 4249', name: 'Technical English', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'SWE 4201', name: 'Object-Oriented Concepts I', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' }
+    ]
+  },
+  3: {
+    semesterGpa: '3.88',
+    cgpa: '3.85',
+    term: 'Winter Semester 2024–25',
+    credits: '19.0',
+    courses: [
+      { code: 'CSE 4303', name: 'Data & Web Mining', credit: '3.0', grade: 'A', points: '3.75', status: 'Passed' },
+      { code: 'CSE 4305', name: 'Computer Organization & Architecture', credit: '3.0', grade: 'A-', points: '3.50', status: 'Passed' },
+      { code: 'CSE 4309', name: 'Database Management Systems I', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'CSE 4310', name: 'Database Management Systems I Lab', credit: '1.5', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'MATH 4341', name: 'Linear Algebra & Complex Variables', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'SWE 4301', name: 'Object-Oriented Software Engineering', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'SWE 4302', name: 'Object-Oriented Software Engineering Lab', credit: '1.5', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'HUM 4341', name: 'French Language & Culture', credit: '1.0', grade: 'A', points: '3.75', status: 'Passed' }
+    ]
+  },
+  4: {
+    semesterGpa: '3.92',
+    cgpa: '3.86',
+    term: 'Summer Semester 2024–25',
+    credits: '18.0',
+    courses: [
+      { code: 'CSE 4403', name: 'Algorithm Design & Analysis', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'CSE 4409', name: 'Database Management Systems II', credit: '3.0', grade: 'A-', points: '3.70', status: 'Passed' },
+      { code: 'CSE 4411', name: 'Data Communication & Networking', credit: '3.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'CSE 4412', name: 'Software Architecture & Design', credit: '3.0', grade: 'B+', points: '3.50', status: 'Passed' },
+      { code: 'HUM 4441', name: 'Engineering Ethics', credit: '2.0', grade: 'A', points: '4.00', status: 'Passed' },
+      { code: 'MATH 4441', name: 'Probability & Statistics', credit: '2.0', grade: 'B+', points: '3.50', status: 'Passed' },
+      { code: 'SWE 4401', name: 'Software Requirements Specification', credit: '2.0', grade: 'A-', points: '3.70', status: 'Passed' }
+    ]
+  }
+};
+
+function switchTab(n) {
+  document.querySelectorAll('.seg-tab').forEach((t, i) => t.classList.toggle('active', i === n - 1));
+  const data = RESULTS_DATA[n];
+  if (!data) return;
+
+  document.getElementById('res-sem-gpa').textContent = data.semesterGpa;
+  document.getElementById('res-sem-sub').textContent = data.term;
+  document.getElementById('res-cum-gpa').textContent = data.cgpa;
+  document.getElementById('res-credits').textContent = data.credits;
+
+  const tbody = document.getElementById('results-table-body');
+  tbody.innerHTML = data.courses.map(c => {
+    let chipClass = 'A';
+    if (c.grade.startsWith('B')) chipClass = 'B';
+    else if (c.grade.startsWith('C')) chipClass = 'C';
+
+    return `
+      <tr>
+        <td><span class="badge-code">${c.code}</span></td>
+        <td><strong>${c.name}</strong></td>
+        <td class="mono">${c.credit}</td>
+        <td><span class="grade-chip ${chipClass}">${c.grade}</span></td>
+        <td class="mono">${c.points}</td>
+        <td><span class="badge-pill green">${c.status}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Initialise with Semester 4
+switchTab(4);
+
+// ── SYLLABUS ACCORDION ──
+function toggleSyllabus(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isOpen = el.classList.toggle('open');
+  const trigger = el.previousElementSibling;
+  if (trigger) {
+    const ind = trigger.querySelector('.syllabus-indicator');
+    if (ind) ind.textContent = isOpen ? '▾ Hide Syllabus' : '▸ View Syllabus';
+  }
+}
+
+// ── ADMIT CARD ──
+function openAdmit() { document.getElementById('admit-overlay').classList.add('open'); }
+function closeAdmit(e) {
+  if (!e || e.target === document.getElementById('admit-overlay')) {
+    document.getElementById('admit-overlay').classList.remove('open');
+  }
+}
+function downloadAdmitCard() {
+  window.print();
+}
+
+// ── NOTICES FILTER & READ STATE ──
+function toggleNotice(card) {
+  const text = card.querySelector('.notice-expand-text');
+  if (text) text.classList.toggle('open');
+  if (card.classList.contains('unread')) {
+    card.classList.remove('unread');
+    updateUnreadCount();
+  }
+}
+
+function filterNotices(category, btn) {
+  document.querySelectorAll('.n-filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const cards = document.querySelectorAll('.notice-item-card');
+  cards.forEach(card => {
+    const cat = card.getAttribute('data-category');
+    if (category === 'all' || cat === category) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+function updateUnreadCount() {
+  const count = document.querySelectorAll('.notice-item-card.unread').length;
+  const badge = document.getElementById('notices-unread-badge');
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = `${count} Unread`;
+      badge.className = 'badge-pill red';
+    } else {
+      badge.textContent = 'All Read';
+      badge.className = 'badge-pill green';
+    }
+  }
+
+  const sidebarCount = document.getElementById('sidebar-notice-count');
+  if (sidebarCount) {
+    sidebarCount.style.display = count > 0 ? 'inline-block' : 'none';
+    sidebarCount.textContent = count;
+  }
+
+  const dots = document.querySelectorAll('.notif-dot');
+  dots.forEach(d => d.style.display = count > 0 ? 'block' : 'none');
+}
+
+// ── FACULTY EVALUATIONS ──
+let activeFeedbackCourseCode = null;
+const feedbackRatings = { teaching: 0, material: 0, punctuality: 0, overall: 0 };
+
+function openFeedback(code, name, teacher) {
+  activeFeedbackCourseCode = code;
+  document.getElementById('fb-modal-title').textContent = name;
+  document.getElementById('fb-modal-sub').textContent = `${code} • Instructor: ${teacher}`;
+
+  Object.keys(feedbackRatings).forEach(k => feedbackRatings[k] = 0);
+  document.querySelectorAll('#fb-overlay .rating-star-btn').forEach(s => s.classList.remove('filled'));
+  const comments = document.getElementById('fb-comments');
+  if (comments) comments.value = '';
+
+  document.getElementById('fb-overlay').classList.add('open');
+}
+
+function closeFeedback(e) {
+  if (!e || e.target === document.getElementById('fb-overlay')) {
+    document.getElementById('fb-overlay').classList.remove('open');
+  }
+}
+
+function rate(group, val) {
+  feedbackRatings[group] = val;
+  const container = document.querySelector(`.stars-rating-wrap[data-rating="${group}"]`);
+  if (!container) return;
+  container.querySelectorAll('.rating-star-btn').forEach((s, i) => {
+    s.classList.toggle('filled', i < val);
+  });
+}
+
+function submitFeedback() {
+  if (activeFeedbackCourseCode) {
+    const card = document.querySelector(`.feedback-row-card[data-course-code="${activeFeedbackCourseCode}"]`);
+    if (card) {
+      const actions = card.querySelector('.fc-actions-box');
+      if (actions) {
+        actions.innerHTML = '<span class="badge-pill green">Submitted</span>';
+      }
+    }
+  }
+  document.getElementById('fb-overlay').classList.remove('open');
+  showToast('Your anonymous evaluation has been successfully submitted!', 'success');
+}
+
+// ── TOAST NOTIFICATIONS ──
+function showToast(message, type = 'info') {
+  let toast = document.getElementById('app-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'app-toast';
+    document.body.appendChild(toast);
+  }
+  toast.className = `toast-alert show`;
+  if (type === 'error') toast.style.borderLeftColor = 'var(--brick)';
+  else if (type === 'success') toast.style.borderLeftColor = 'var(--primary)';
+  else toast.style.borderLeftColor = 'var(--blue)';
+
+  toast.innerHTML = `<span>${message}</span>`;
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3200);
+}
+</script>
+</body>
+</html>
